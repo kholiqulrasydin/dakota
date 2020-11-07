@@ -1,4 +1,5 @@
 import 'package:dakota/dakota_add.dart';
+import 'package:dakota/dakota_viewAll.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -58,7 +59,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               InkWell(
-                onTap: (){},
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DarkotaViewAll()),
+                  );
+                },
                 child: Container(
                   width: width * 0.60,
                   margin: EdgeInsets.only(bottom: height * 0.03),
