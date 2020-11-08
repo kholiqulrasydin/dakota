@@ -1,3 +1,4 @@
+import 'package:dakota/dakota_view.dart';
 import 'package:flutter/material.dart';
 
 
@@ -9,7 +10,7 @@ class DarkotaViewAll extends StatefulWidget {
 class _DarkotaViewAllState extends State<DarkotaViewAll> {
 
 
-  final FOOD_DATA = [
+  final fData = [
     {
       "name":"Konco Tani",
       "ketuaKelompok":"Sutejo",
@@ -74,47 +75,52 @@ class _DarkotaViewAllState extends State<DarkotaViewAll> {
   List<Widget> itemsData = [];
 
   void getPostsData() {
-    List<dynamic> responseList = FOOD_DATA;
+    List<dynamic> responseList = fData;
     List<Widget> listItems = [];
     responseList.forEach((post) {
-      listItems.add(Container(
-          height: 150,
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20.0)), color: Colors.white, boxShadow: [
-            BoxShadow(color: Colors.black.withAlpha(100), blurRadius: 10.0),
-          ]),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      post["name"],
-                      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      post["ketuaKelompok"],
-                      style: const TextStyle(fontSize: 17, color: Colors.grey),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      post["kelurahan"],
-                      style: const TextStyle(fontSize: 25, color: Colors.black, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-                Image.asset(
-                  "assets/images/${post["image"]}",
-                  height: double.infinity,
-                )
-              ],
-            ),
-          )));
+      listItems.add(InkWell(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DakotaView(post['name'])));
+        },
+        child: Container(
+            height: 150,
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20.0)), color: Colors.white, boxShadow: [
+              BoxShadow(color: Colors.black.withAlpha(100), blurRadius: 10.0),
+            ]),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        post["name"],
+                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        post["ketuaKelompok"],
+                        style: const TextStyle(fontSize: 17, color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        post["kelurahan"],
+                        style: const TextStyle(fontSize: 25, color: Colors.black, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                  Image.asset(
+                    "assets/images/${post["image"]}",
+                    height: double.infinity,
+                  )
+                ],
+              ),
+            )),
+      ));
     });
     setState(() {
       itemsData = listItems;

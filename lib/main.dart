@@ -16,15 +16,15 @@ class _DakotaStartState extends State<DakotaStart> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Neumorphic Widgets',
+      title: 'Dinas Pertanian App',
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        canvasColor: Color.fromRGBO(38, 38, 38, 1),
+        canvasColor: Colors.white,
       ),
       theme: ThemeData(
-        canvasColor: Color.fromRGBO(239, 238, 238, 1),
-        backgroundColor: Color.fromRGBO(231, 240, 247, 1),
-        scaffoldBackgroundColor: Color.fromRGBO(231, 240, 247, 1),
+        canvasColor: Colors.white,
+        backgroundColor: Colors.white,
+        scaffoldBackgroundColor: Colors.white,
         textTheme: TextTheme(
           headline1: GoogleFonts.dmSans(
             textStyle: TextStyle(

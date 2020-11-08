@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
+//import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class DakotaAdd extends StatefulWidget {
   @override
@@ -128,25 +128,25 @@ class _DakotaAddState extends State<DakotaAdd> {
 
 
 
-    Map<String, Widget> widgets;
-    widgets = {
-      "Pilih Jenis Lahan": SearchableDropdown.single(
-        items: ListJenisLahan.list.map((exNum) {
-          return (DropdownMenuItem(
-              child: Text(exNum.numberString), value: exNum.numberString));
-        }).toList(),
-        value: ListJenisLahan,
-        hint: "Pilih Satu Jenis",
-        searchHint: "Cari Jenis Alamat",
-        onChanged: (value) {
-          setState(() {
-            jenisLahan = value;
-          });
-        },
-        dialogBox: true,
-        isExpanded: true,
-      ),
-    };
+//    Map<String, Widget> widgets;
+//    widgets = {
+//      "Pilih Jenis Lahan": SearchableDropdown.single(
+//        items: ListJenisLahan.list.map((exNum) {
+//          return (DropdownMenuItem(
+//              child: Text(exNum.numberString), value: exNum.numberString));
+//        }).toList(),
+//        value: ListJenisLahan,
+//        hint: "Pilih Satu Jenis",
+//        searchHint: "Cari Jenis Alamat",
+//        onChanged: (value) {
+//          setState(() {
+//            jenisLahan = value;
+//          });
+//        },
+//        dialogBox: true,
+//        isExpanded: true,
+//      ),
+//    };
 
     return Scaffold(
       backgroundColor: Colors.white,

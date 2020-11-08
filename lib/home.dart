@@ -1,5 +1,6 @@
 import 'package:dakota/dakota_add.dart';
 import 'package:dakota/dakota_viewAll.dart';
+import 'package:dakota/edit_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -25,15 +26,31 @@ class _HomePageState extends State<HomePage> {
         child: Center(
           child: Column(
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(top: height * 0.04, left: width * 0.50, right: width * 0.02),
-                alignment: Alignment.topRight,
-                child: Row(
-                  children: <Widget>[
-                    Text('Logout ', style: TextStyle(color: Colors.blueGrey), textAlign: TextAlign.right,),
-                    IconButton(icon: Icon(Icons.launch), onPressed: (){}),
-                  ],
-                ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(top: height * 0.04, left: width * 0.02),
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      children: <Widget>[
+                        Text('Profil ', style: TextStyle(color: Colors.blueGrey), textAlign: TextAlign.right,),
+                        IconButton(icon: Icon(Icons.person), onPressed: (){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditProfilePage()));
+                        }),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: height * 0.04, left: width * 0.26, right: width * 0.02),
+                    alignment: Alignment.topRight,
+                    child: Row(
+                      children: <Widget>[
+                        Text('Logout ', style: TextStyle(color: Colors.blueGrey), textAlign: TextAlign.right,),
+                        IconButton(icon: Icon(Icons.launch), onPressed: (){}),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               Container(
                 margin: EdgeInsets.only(top: height * 0.05, bottom: height * 0.03),
