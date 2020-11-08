@@ -68,19 +68,9 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FadeIn(1.2, Container(
-                  width: 100.0,
-                  height: 100.0,
-                  decoration: new BoxDecoration(
-                    image: new DecorationImage(
-                      image: new AssetImage('assets/GoKart.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                ),
+
                 SizedBox(
-                  height: 10.0,
+                  height: MediaQuery.of(context).size.height * 0.2,
                 ),
                 Container(
                   child: Column(
