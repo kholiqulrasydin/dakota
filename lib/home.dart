@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:dakota/dakota_add.dart';
+import 'package:dakota/dakota_view.dart';
 import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/edit_profile_page.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +17,39 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _drawerKey = GlobalKey<ScaffoldState>();
+
+  final fData = [
+    {
+      "name": "Konco Tani",
+      "ketuaKelompok": "Sutejo",
+      "kelurahan": "Nambangrejo",
+      "image": "kontjotanie.jpg"
+    },
+    {
+      "name": "Tani Makmur",
+      "ketuaKelompok": "Bowo",
+      "kelurahan": "Bangunsari",
+      "image": "kontjotanie.jpg"
+    },
+    {
+      "name": "Subur Jaya",
+      "ketuaKelompok": "Suyatno",
+      "kelurahan": "Mirah",
+      "image": "kontjotanie.jpg"
+    },
+    {
+      "name": "Tani Makmur",
+      "ketuaKelompok": "Bambang",
+      "kelurahan": "Sukorejo",
+      "image": "kontjotanie.jpg"
+    },
+    {
+      "name": "Tani Subur",
+      "ketuaKelompok": "Rahmadi",
+      "kelurahan": "Ponorogo",
+      "image": "kontjotanie.jpg"
+    }
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -93,19 +129,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: (){},
-                child: Container(
-                  width: width * 0.60,
-                  margin: EdgeInsets.only(bottom: height * 0.03),
-                  child: Column(
-                    children: <Widget>[
-                      Text('Kelompok Tani Berdasar Kecamatan', style: TextStyle(color: Colors.blueGrey),),
-                      Divider(color: Colors.blueGrey,)
-                    ],
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -125,42 +148,131 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Colors.blueAccent),
         ),
       ),
-      body: Container(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: width * 1,
-                      padding: EdgeInsets.only(left: width * 0.08, top: height * 0.02),
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        'Jumlah Bantuan',
-                        style:
-                        GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: 18),
-                      ),
-                    ),
-                    Container(
-                      width: width * 0.90,
-                      height: height * 0.30,
-                      child: Expanded(
-                        child: Row(
-                          children: <Widget>[
-                            CategoriesRow(),
-                            PieChartView(),
-                          ],
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: width * 1,
+                        padding: EdgeInsets.only(left: width * 0.08, top: height * 0.02),
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          'Jumlah Bantuan',
+                          style:
+                          GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: 18),
                         ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        width: width * 0.90,
+                        height: height * 0.30,
+                        child: Expanded(
+                          child: Row(
+                            children: <Widget>[
+                              CategoriesRow(),
+                              PieChartView(),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: EdgeInsets.only(left: width * 0.08),
+                        child: Text('Terakhir ditambahkan', style:
+                        GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: 18),),
+                      ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: width,
+                        alignment: Alignment.topCenter,
+                        height: height * 0.27,
+                        child: LastAdded(fData),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+class LastAdded extends StatelessWidget {
+  List fData;
+  LastAdded(this.fData);
+
+  var colors =[
+    Colors.teal.shade400,
+    Colors.blue.shade400,
+    Colors.deepPurpleAccent.shade400,
+    Colors.blueGrey.shade400,
+    Colors.amber.shade400,
+    Colors.pinkAccent.shade400,
+    Colors.teal.shade400,
+    Colors.blue.shade400,
+    Colors.deepPurpleAccent.shade400,
+    Colors.blueGrey.shade400,
+    Colors.amber.shade400,
+  ];
+  Random random = new Random();
+
+  @override
+  Widget build(BuildContext context) {
+    final double categoryHeight =
+        MediaQuery.of(context).size.height * 0.30 - 50;
+    return SafeArea(
+      child: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          itemCount: fData.length,
+          itemBuilder: (context, index){
+            var c = random.nextInt(
+                colors.length);
+            final _data = fData[index];
+            return Container(
+                width: 150,
+                margin: EdgeInsets.symmetric(vertical: 35, horizontal: 10),
+                height: categoryHeight,
+                decoration: BoxDecoration(
+                    color: colors[c],
+                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                child: InkWell(
+                  onTap: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DakotaView(_data['name'])));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          _data['name'],
+                          style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          _data['kelurahan'],
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            );
+          }
+      ),
+    );
+  }
+}
+

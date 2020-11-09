@@ -21,7 +21,7 @@ class _DakotaViewState extends State<DakotaView> {
           },
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.green,
+            color: Colors.blueAccent,
           ),
         ),
         title: Text('Profil Kelompok', style: TextStyle(color: Colors.blueGrey),),
@@ -38,18 +38,24 @@ class _DakotaViewState extends State<DakotaView> {
               height: 40,
             ),
             Row(
-              children: [
-                Icon(
-                  Icons.people,
-                  color: Colors.green,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Icon(
+                      Icons.people,
+                      color: Colors.blueAccent,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      "Informasi Kelompok",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  "Informasi Kelompok",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                IconButton(icon: Icon(Icons.edit, color: Colors.blueAccent,), onPressed: (){},)
               ],
             ),
             Divider(
@@ -62,8 +68,8 @@ class _DakotaViewState extends State<DakotaView> {
             buildAccountOptionRow(context, "Nama Kelompok", widget.namaKelompok),
             buildAccountOptionRow(context, "Nomor Register", "202011080001"),
             buildAccountOptionRow(context, "Alamat", "Jl. Mawar 12, Dukuh Wetan"),
-            buildAccountOptionRow(context, "Kecamatan", "Sukorejo"),
-            buildAccountOptionRow(context, "Kelurahan/Desa", "Nambangrejo"),
+            buildAccountOptionRow(context, "Kecamatan", "Babadan"),
+            buildAccountOptionRow(context, "Kelurahan/Desa", "Japan"),
             buildAccountOptionRow(context, "Nama Ketua", "Sutejo"),
             buildAccountOptionRow(context, "Jumlah Anggota", "9 Orang"),
             buildAccountOptionRow(context, "Detail Lahan", "214 meter persegi non-sawah"),
@@ -72,18 +78,24 @@ class _DakotaViewState extends State<DakotaView> {
               height: 40,
             ),
             Row(
-              children: [
-                Icon(
-                  Icons.accessibility,
-                  color: Colors.green,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Icon(
+                      Icons.accessibility,
+                      color: Colors.blueAccent,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      "Bantuan",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  "Bantuan",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                IconButton(icon: Icon(Icons.add, color: Colors.blueAccent,), onPressed: (){})
               ],
             ),
             Divider(
@@ -143,11 +155,20 @@ class _DakotaViewState extends State<DakotaView> {
                   ],
                 ),
                 actions: [
+                  InkWell(
+                    onTap: (){},
+                    child: Row(
+                      children: <Widget>[
+                        Text('Hapus', style: TextStyle(color: Colors.redAccent.shade400),),
+                        Icon(Icons.delete, color: Colors.redAccent.shade400,),
+                      ],
+                    ),
+                  ),
                   FlatButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text("Close")),
+                      child: Text("Tutup")),
                 ],
               );
             });
