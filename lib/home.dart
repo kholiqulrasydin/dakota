@@ -1,5 +1,6 @@
 import 'dart:math';
-
+import 'dart:async';
+import 'dart:convert';
 import 'package:dakota/dakota_add.dart';
 import 'package:dakota/dakota_view.dart';
 import 'package:dakota/dakota_viewAll.dart';
@@ -10,6 +11,63 @@ import 'package:google_fonts/google_fonts.dart';
 import 'Dashboard/categories_row.dart';
 import 'Dashboard/pie_chart_view.dart';
 
+import 'package:http/http.dart' as http;
+//fetch data
+Future<DakotaModel> fetchDakota() async {
+  final response =
+  await http.get('apidinper.reboeng.com/api/dakota/limit');
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return DakotaModel.fromJson(jsonDecode(response.body));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load Dakota');
+  }
+}
+class DakotaModel{
+  final int id;
+  final String nama_kelompok;
+  final String nomor_register;
+  final String alamat;
+  final String kecamatan;
+  final String kelurahan;
+  final String geo_latitude;
+  final String geo_longtitude;
+  final String nama_ketua;
+  final int jumlah_anggota;
+  final String jenis_lahan;
+  final int luas_lahan;
+  final String bidang_usaha;
+  final String sub_bidang_usaha;
+
+  DakotaModel({this.id,this.nama_kelompok,this.nomor_register,this.alamat,this.kecamatan
+    ,this.kelurahan,this.geo_latitude,this.geo_longtitude,this.nama_ketua,this.jumlah_anggota,this.jenis_lahan
+    ,this.luas_lahan,this.bidang_usaha,this.sub_bidang_usaha,});
+
+  factory DakotaModel.fromJson(Map<String, dynamic> json) {
+    return DakotaModel(
+//      id: json['id'],
+      nama_kelompok: json['nama_kelompok'],
+//      nomor_register: json['nomor_register'],
+//      alamat: json['alamat'],
+//      kecamatan: json['kecamatan'],
+      kelurahan: json['kelurahan'],
+//      geo_latitude: json['geo_latitude'],
+//      geo_longtitude: json['geo_longtitude'],
+      nama_ketua: json['nama_ketua'],
+//      jumlah_anggota: json['jumlah_anggota'],
+//      jenis_lahan: json['jenis_lahan'],
+//      luas_lahan: json['luas_lahan'],
+//      bidang_usaha: json['bidang_usaha'],
+//      sub_bidang_usaha: json['sub_bidang_usaha'],
+    );
+  }
+
+
+}
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -17,7 +75,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _drawerKey = GlobalKey<ScaffoldState>();
-
+  Future<DakotaModel> futureDakota;
+  @override
+  void initState() {
+    super.initState();
+    futureDakota = fetchDakota();
+  }
   final fData = [
     {
       "name": "Konco Tani",
