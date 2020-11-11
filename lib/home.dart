@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import 'package:dakota/Services/auth.dart';
+import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/dakota_add.dart';
 import 'package:dakota/dakota_view.dart';
 import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/edit_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import 'Dashboard/categories_row.dart';
 import 'Dashboard/pie_chart_view.dart';
@@ -53,6 +56,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return new Scaffold(
@@ -82,7 +86,9 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       children: <Widget>[
                         Text('Logout ', style: TextStyle(color: Colors.blueGrey), textAlign: TextAlign.right,),
-                        IconButton(icon: Icon(Icons.launch), onPressed: (){}),
+                        IconButton(icon: Icon(Icons.launch), onPressed: () async {
+                          await AuthServices.signOut(context, authProvider);
+                        }),
                       ],
                     ),
                   ),

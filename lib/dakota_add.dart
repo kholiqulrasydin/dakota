@@ -1,18 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:dakota/Services/auth.dart';
+import 'package:dakota/Services/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 //import 'package:searchable_dropdown/searchable_dropdown.dart';
 //create data
-Future<DakotaModel> createDakota(String nama_kelompok,String nomor_register,String alamat
+Future<DakotaModel> createDakota(AuthProvider authProvider,String nama_kelompok,String nomor_register,String alamat
     ,String kecamatan,String kelurahan,String geo_latitude,String geo_longtitude,
     String nama_ketua,int jumlah_anggota,
     String jenis_lahan,int luas_lahan,String bidang_usaha
     ,String sub_bidang_usaha) async {
+  print(authProvider.currentToken);
   final http.Response response = await http.post(
-    'apidinper.reboeng.com/api/dakota',
+    'http://apidinper.reboeng.com/api/dakota',
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ${authProvider.currentToken}'
     },
     body: jsonEncode(<String, String>{
       'nama_kelompok': nama_kelompok,
@@ -32,10 +37,11 @@ Future<DakotaModel> createDakota(String nama_kelompok,String nomor_register,Stri
     }),
   );
 
-  if (response.statusCode == 201) {
+  print(response.statusCode.toString());
+  if (response.statusCode == 200) {
     return DakotaModel.fromJson(jsonDecode(response.body));
   } else {
-    throw Exception('Failed to create Dakota.');
+    print('Failed To Create Dakota');
   }
 }
 //update data
@@ -45,7 +51,7 @@ Future<DakotaModel> updateDakota(String nama_kelompok,String nomor_register,Stri
     String jenis_lahan,int luas_lahan,String bidang_usaha
     ,String sub_bidang_usaha) async {
   final http.Response response = await http.put(
-    'https://jsonplaceholder.typicode.com/albums/1',
+    'http://apidinper.reboeng.com/api/dakota/1}',
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -55,7 +61,8 @@ Future<DakotaModel> updateDakota(String nama_kelompok,String nomor_register,Stri
       'alamat': alamat,
       'kecamatan': kecamatan,
       'kelurahan': kelurahan,
-      'geo': geo,
+      'geo_latitude': geo,
+      'geo_longtitude': geo,
       'nama_ketua': nama_ketua,
       'jumlah_anggota': jumlah_anggota.toString(),
       'jenis_lahan': jenis_lahan,
@@ -285,7 +292,7 @@ class _DakotaAddState extends State<DakotaAdd> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
 //    Map<String, Widget> widgets;
 //    widgets = {
@@ -536,11 +543,9 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               FlatButton(onPressed: (){
-                setState(() {
-                  _futureDakota = createDakota(_namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
-                      ,_kelurahandesacontroller.text,_kecamatancontroller.text,_kecamatancontroller.text,_namaketuacontroller.text,int.parse(_jumlahanggota.text),
-                  jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
-                });
+                createDakota(authProvider, _namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
+                    ,_kelurahandesacontroller.text,'-7,1343857','8,2353287',_namaketuacontroller.text,int.parse(_jumlahanggota.text),
+                    jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
               }, child: Text('submit'))
             ],
           ),

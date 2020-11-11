@@ -1,7 +1,11 @@
+import 'package:dakota/Services/auth.dart';
+import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/animations/fade_in.dart';
 import 'package:dakota/forgot_password.dart';
 import 'package:dakota/home.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 
 class LoginPage extends StatefulWidget {
@@ -20,8 +24,29 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  void auth(String email, String pass) async {
+    String myurl =
+        "apidinper.reboeng.com/api/login";
+    http.post(myurl, headers: {
+      'Accept': 'application/json',
+    }, body: {
+      "email": email,
+      "password": pass
+    }).then((response) {
+      print(response.statusCode);
+      print(response.body);
+
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: ListView(
         children: <Widget>[
@@ -77,6 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       FadeIn(1.4, TextField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           hintText: 'Username or Email Address',
                           contentPadding:
@@ -88,6 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 10.0,
                       ),
                       FadeIn(1.6, TextField(
+                        controller: _passwordController,
                         decoration: InputDecoration(
                           hintText: 'Password',
                           suffixIcon: IconButton(
@@ -163,11 +190,10 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
+                  onTap: () async {
+                    print('Login Start');
+//                    auth(_emailController.text, _passwordController.text);
+                    await AuthServices.signIn(context, authProvider,_emailController.text, _passwordController.text);
                   },
                 ),
                 ),
