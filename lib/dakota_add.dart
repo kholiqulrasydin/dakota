@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 //import 'package:searchable_dropdown/searchable_dropdown.dart';
 //create data
 Future<DakotaModel> createDakota(String nama_kelompok,String nomor_register,String alamat
-    ,String kecamatan,String kelurahan,String geo,
+    ,String kecamatan,String kelurahan,String geo_latitude,String geo_longtitude,
     String nama_ketua,int jumlah_anggota,
     String jenis_lahan,int luas_lahan,String bidang_usaha
     ,String sub_bidang_usaha) async {
@@ -20,7 +20,8 @@ Future<DakotaModel> createDakota(String nama_kelompok,String nomor_register,Stri
       'alamat': alamat,
       'kecamatan': kecamatan,
       'kelurahan': kelurahan,
-      'geo': geo,
+      'geo_latitude': geo_latitude,
+      'geo_longtitude': geo_longtitude,
       'nama_ketua': nama_ketua,
       'jumlah_anggota': jumlah_anggota.toString(),
       'jenis_lahan': jenis_lahan,
@@ -118,7 +119,8 @@ class DakotaModel{
   final String alamat;
   final String kecamatan;
   final String kelurahan;
-  final String geo;
+  final String geo_latitude;
+  final String geo_longtitude;
   final String nama_ketua;
   final int jumlah_anggota;
   final String jenis_lahan;
@@ -127,7 +129,7 @@ class DakotaModel{
   final String sub_bidang_usaha;
 
   DakotaModel({this.id,this.nama_kelompok,this.nomor_register,this.alamat,this.kecamatan
-    ,this.kelurahan,this.geo,this.nama_ketua,this.jumlah_anggota,this.jenis_lahan
+    ,this.kelurahan,this.geo_latitude,this.geo_longtitude,this.nama_ketua,this.jumlah_anggota,this.jenis_lahan
     ,this.luas_lahan,this.bidang_usaha,this.sub_bidang_usaha,});
 
   factory DakotaModel.fromJson(Map<String, dynamic> json) {
@@ -138,7 +140,8 @@ class DakotaModel{
       alamat: json['alamat'],
       kecamatan: json['kecamatan'],
       kelurahan: json['kelurahan'],
-      geo: json['geo'],
+      geo_latitude: json['geo_latitude'],
+      geo_longtitude: json['geo_longtitude'],
       nama_ketua: json['nama_ketua'],
       jumlah_anggota: json['jumlah_anggota'],
       jenis_lahan: json['jenis_lahan'],
@@ -156,7 +159,13 @@ class DakotaAdd extends StatefulWidget {
 }
 
 class _DakotaAddState extends State<DakotaAdd> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _namacontroller = TextEditingController();
+  final TextEditingController _namaketuacontroller = TextEditingController();
+  final TextEditingController alamatcontroller = TextEditingController();
+  final TextEditingController _kelurahandesacontroller = TextEditingController();
+  final TextEditingController _kecamatancontroller = TextEditingController();
+  final TextEditingController _jumlahanggota = TextEditingController();
+  final TextEditingController _luaslahancontroller = TextEditingController();
   Future<DakotaModel> _futureDakota;
 
   bool asTabs = false;
@@ -309,6 +318,7 @@ class _DakotaAddState extends State<DakotaAdd> {
           child: Column(
             children: <Widget>[
               TextField(
+                controller: _namacontroller,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
                 decoration: InputDecoration(
@@ -319,6 +329,7 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               TextField(
+                controller: _namaketuacontroller,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
                 decoration: InputDecoration(
@@ -329,6 +340,7 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               TextField(
+                controller: alamatcontroller,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
                 decoration: InputDecoration(
@@ -339,6 +351,7 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               TextField(
+                controller: _kelurahandesacontroller,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
                 decoration: InputDecoration(
@@ -349,6 +362,7 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               TextField(
+                controller: _kecamatancontroller,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
                 decoration: InputDecoration(
@@ -366,6 +380,7 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               TextField(
+                controller: _jumlahanggota,
                 keyboardType: TextInputType.number,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
@@ -401,6 +416,7 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               TextField(
+                controller: _luaslahancontroller,
                 keyboardType: TextInputType.number,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
@@ -521,7 +537,9 @@ class _DakotaAddState extends State<DakotaAdd> {
               Divider(),
               FlatButton(onPressed: (){
                 setState(() {
-                  _futureDakota = createDakota(_controller.text);
+                  _futureDakota = createDakota(_namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
+                      ,_kelurahandesacontroller.text,_kecamatancontroller.text,_kecamatancontroller.text,_namaketuacontroller.text,int.parse(_jumlahanggota.text),
+                  jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
                 });
               }, child: Text('submit'))
             ],
