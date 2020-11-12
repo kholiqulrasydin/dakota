@@ -1,6 +1,11 @@
 import 'dart:convert';
 
+import 'package:dakota/Services/api/bantuan_usaha.dart';
+import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/auth.dart';
+import 'package:dakota/Services/providers/bantuan_usaha.dart';
+import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/home.dart';
 import 'package:dakota/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +14,7 @@ import 'package:http/http.dart' as http;
 
 class AuthServices{
 
-  static Future<void> signIn(BuildContext context, AuthProvider authProvider, String email, String password) async{
+  static Future<void> signIn(BuildContext context, AuthProvider authProvider, String email, String password, BantuanUsaha bantuanUsaha, DakotaProvider dakotaProvider) async{
     print('Logging in API');
     final http.Response response =
     await http.post('http://apidinper.reboeng.com/api/login',
@@ -29,7 +34,7 @@ class AuthServices{
 
       print(userToken['token']);
       authProvider.token = userToken['token'];
-      return Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wrapper()));
+      return initialLogged(context, authProvider, bantuanUsaha, dakotaProvider);
     }else{
       print('Login Error');
     }
@@ -55,4 +60,14 @@ class AuthServices{
       print('Logout Error');
     }
   }
+
+  static Future<void> initialLogged(BuildContext context, AuthProvider authProvider, BantuanUsaha bantuanUsaha, DakotaProvider dakotaProvider) async {
+
+    DakotaApi.getLast(authProvider, dakotaProvider);
+    BantuanUsahaApi.getCountData(authProvider, bantuanUsaha);
+
+    return Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage()));
+
+  }
+
 }

@@ -1,9 +1,16 @@
+import 'package:dakota/dakota_edit.dart';
+import 'package:dakota/model/BantuanUsahaModel.dart';
+import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DakotaView extends StatefulWidget {
-  final String namaKelompok;
-  DakotaView(this.namaKelompok);
+  final int id;
+  final List<DakotaModel> _dakota;
+  final List<BantuanUsahaModel> _bantuanUsaha;
+
+  DakotaView(this.id, this._dakota, this._bantuanUsaha);
+
   @override
   _DakotaViewState createState() => _DakotaViewState();
 }
@@ -31,7 +38,7 @@ class _DakotaViewState extends State<DakotaView> {
         child: ListView(
           children: [
             Text(
-              "${widget.namaKelompok}",
+              "${widget._dakota.first.namaKelompok}",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
             ),
             SizedBox(
@@ -55,7 +62,9 @@ class _DakotaViewState extends State<DakotaView> {
                     ),
                   ],
                 ),
-                IconButton(icon: Icon(Icons.edit, color: Colors.blueAccent,), onPressed: (){},)
+                IconButton(icon: Icon(Icons.edit, color: Colors.blueAccent,), onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> DakotaEdit(widget._dakota)));
+                },)
               ],
             ),
             Divider(
@@ -65,15 +74,15 @@ class _DakotaViewState extends State<DakotaView> {
             SizedBox(
               height: 10,
             ),
-            buildAccountOptionRow(context, "Nama Kelompok", widget.namaKelompok),
-            buildAccountOptionRow(context, "Nomor Register", "202011080001"),
-            buildAccountOptionRow(context, "Alamat", "Jl. Mawar 12, Dukuh Wetan"),
-            buildAccountOptionRow(context, "Kecamatan", "Babadan"),
-            buildAccountOptionRow(context, "Kelurahan/Desa", "Japan"),
-            buildAccountOptionRow(context, "Nama Ketua", "Sutejo"),
-            buildAccountOptionRow(context, "Jumlah Anggota", "9 Orang"),
-            buildAccountOptionRow(context, "Detail Lahan", "214 meter persegi non-sawah"),
-            buildAccountOptionRow(context, "Bidang Usaha", "Hortikultura, Semangka"),
+            buildAccountOptionRow(context, "Nama Kelompok", widget._dakota.first.namaKelompok),
+            buildAccountOptionRow(context, "Nomor Register", widget._dakota.first.nomorRegister),
+            buildAccountOptionRow(context, "Alamat", widget._dakota.first.alamat),
+            buildAccountOptionRow(context, "Kecamatan", widget._dakota.first.kecamatan),
+            buildAccountOptionRow(context, "Kelurahan/Desa", widget._dakota.first.kelurahan),
+            buildAccountOptionRow(context, "Nama Ketua", widget._dakota.first.namaKetua),
+            buildAccountOptionRow(context, "Jumlah Anggota", widget._dakota.first.jumlahAnggota.toString()),
+            buildAccountOptionRow(context, "Detail Lahan", widget._dakota.first.jenisLahan),
+            buildAccountOptionRow(context, "Bidang Usaha", widget._dakota.first.bidangUsaha),
             SizedBox(
               height: 40,
             ),
@@ -105,8 +114,15 @@ class _DakotaViewState extends State<DakotaView> {
             SizedBox(
               height: 10,
             ),
-            buildDonation(context, "Bantuan Alsintan"),
-            buildDonation(context, "Bantuan Sarana Prasarana"),
+            Container(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget._bantuanUsaha.length,
+                  itemBuilder: (context, index){
+                    final _data = widget._bantuanUsaha[index];
+                    return buildDonation(context, "Bantuan Alsintan", _data.id);
+                  })
+            ),
             SizedBox(
               height: 50,
             ),
@@ -138,7 +154,7 @@ class _DakotaViewState extends State<DakotaView> {
     );
   }
 
-  GestureDetector buildDonation(BuildContext context, String title) {
+  GestureDetector buildDonation(BuildContext context, String title, int id) {
     return GestureDetector(
       onTap: () {
         showDialog(

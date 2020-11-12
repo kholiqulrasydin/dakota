@@ -1,13 +1,21 @@
 import 'dart:math';
 
+import 'package:dakota/Services/api/bantuan_usaha.dart';
+import 'package:dakota/Services/api/dakota.dart';
+import 'package:dakota/Services/auth.dart';
+import 'package:dakota/Services/providers/auth.dart';
+import 'package:dakota/Services/providers/bantuan_usaha.dart';
+import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/dakota_add.dart';
-import 'package:dakota/dakota_view.dart';
 import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/edit_profile_page.dart';
+import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import 'Dashboard/categories_row.dart';
+import 'Dashboard/pie_chart.dart';
 import 'Dashboard/pie_chart_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,43 +26,48 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _drawerKey = GlobalKey<ScaffoldState>();
 
-  final fData = [
-    {
-      "name": "Konco Tani",
-      "ketuaKelompok": "Sutejo",
-      "kelurahan": "Nambangrejo",
-      "image": "kontjotanie.jpg"
-    },
-    {
-      "name": "Tani Makmur",
-      "ketuaKelompok": "Bowo",
-      "kelurahan": "Bangunsari",
-      "image": "kontjotanie.jpg"
-    },
-    {
-      "name": "Subur Jaya",
-      "ketuaKelompok": "Suyatno",
-      "kelurahan": "Mirah",
-      "image": "kontjotanie.jpg"
-    },
-    {
-      "name": "Tani Makmur",
-      "ketuaKelompok": "Bambang",
-      "kelurahan": "Sukorejo",
-      "image": "kontjotanie.jpg"
-    },
-    {
-      "name": "Tani Subur",
-      "ketuaKelompok": "Rahmadi",
-      "kelurahan": "Ponorogo",
-      "image": "kontjotanie.jpg"
+  List<DakotaModel> dData = [];
+  List<Category> keyCategory =[];
+
+  static Future<void> refreshLatest(AuthProvider authProvider, BantuanUsaha bantuanUsaha, DakotaProvider dakotaProvider) async {
+    await DakotaApi.getLast(authProvider, dakotaProvider);
+    await BantuanUsahaApi.getCountData(authProvider, bantuanUsaha);
+  }
+
+  void setData(DakotaProvider dakotaProvider, BantuanUsaha bantuanUsaha) {
+    setState(() {
+      dData = dakotaProvider.dakotaList;
+      keyCategory = [
+        Category('${bantuanUsaha.countAlsintan} Alsintan', amount: double.parse(bantuanUsaha.countAlsintan)),
+        Category('${bantuanUsaha.countSarpras} SARPRAS', amount: double.parse(bantuanUsaha.countSarpras)),
+        Category('${bantuanUsaha.countBibit} Bibit/Benih', amount: double.parse(bantuanUsaha.countBibit)),
+        Category('${bantuanUsaha.countTernak} Ternak', amount: double.parse(bantuanUsaha.countTernak)),
+        Category('${bantuanUsaha.countPerikanan} Perikanan', amount: double.parse(bantuanUsaha.countPerikanan)),
+        Category('${bantuanUsaha.countLainnya} Lainnya', amount: double.parse(bantuanUsaha.countLainnya)),
+      ];
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _onRefresh();
+  }
+  Future<void> _onRefresh() async {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+    BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context, listen: false);
+    DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context, listen: false);
+
+    await refreshLatest(authProvider, bantuanUsaha, dakotaProvider);
+    return setData(dakotaProvider, bantuanUsaha);
     }
-  ];
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+
     return new Scaffold(
       backgroundColor: Colors.white,
       key: _drawerKey,
@@ -65,36 +78,58 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(top: height * 0.04, left: width * 0.02),
+                    margin:
+                        EdgeInsets.only(top: height * 0.04, left: width * 0.02),
                     alignment: Alignment.topLeft,
                     child: Row(
                       children: <Widget>[
-                        Text('Profil ', style: TextStyle(color: Colors.blueGrey), textAlign: TextAlign.right,),
-                        IconButton(icon: Icon(Icons.person), onPressed: (){
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditProfilePage()));
-                        }),
+                        Text(
+                          'Profil ',
+                          style: TextStyle(color: Colors.blueGrey),
+                          textAlign: TextAlign.right,
+                        ),
+                        IconButton(
+                            icon: Icon(Icons.person),
+                            onPressed: () async {
+//                              await BantuanUsahaApi.getCountData(authProvider, bantuanUsaha);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => EditProfilePage()));
+                            }),
                       ],
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: height * 0.04, left: width * 0.26, right: width * 0.02),
+                    margin: EdgeInsets.only(
+                        top: height * 0.04,
+                        left: width * 0.26,
+                        right: width * 0.02),
                     alignment: Alignment.topRight,
                     child: Row(
                       children: <Widget>[
-                        Text('Logout ', style: TextStyle(color: Colors.blueGrey), textAlign: TextAlign.right,),
-                        IconButton(icon: Icon(Icons.launch), onPressed: (){}),
+                        Text(
+                          'Logout ',
+                          style: TextStyle(color: Colors.blueGrey),
+                          textAlign: TextAlign.right,
+                        ),
+                        IconButton(
+                            icon: Icon(Icons.launch),
+                            onPressed: () async {
+                              AuthProvider authProvider = Provider.of<AuthProvider>(context);
+                              await AuthServices.signOut(context, authProvider);
+                            }),
                       ],
                     ),
                   ),
                 ],
               ),
               Container(
-                margin: EdgeInsets.only(top: height * 0.05, bottom: height * 0.03),
+                margin:
+                    EdgeInsets.only(top: height * 0.05, bottom: height * 0.03),
                 padding: EdgeInsets.all(width * 0.17),
                 child: Image.asset('assets/Lambang_Kabupaten_Ponorogo.png'),
               ),
               InkWell(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => DakotaAdd()),
@@ -105,14 +140,19 @@ class _HomePageState extends State<HomePage> {
                   margin: EdgeInsets.only(bottom: height * 0.03),
                   child: Column(
                     children: <Widget>[
-                      Text('Tambah Data', style: TextStyle(color: Colors.blueGrey),),
-                      Divider(color: Colors.blueGrey,)
+                      Text(
+                        'Tambah Data',
+                        style: TextStyle(color: Colors.blueGrey),
+                      ),
+                      Divider(
+                        color: Colors.blueGrey,
+                      )
                     ],
                   ),
                 ),
               ),
               InkWell(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => DarkotaViewAll()),
@@ -123,8 +163,13 @@ class _HomePageState extends State<HomePage> {
                   margin: EdgeInsets.only(bottom: height * 0.03),
                   child: Column(
                     children: <Widget>[
-                      Text('Lihat Semua Data Kelompok Tani', style: TextStyle(color: Colors.blueGrey),),
-                      Divider(color: Colors.blueGrey,)
+                      Text(
+                        'Lihat Semua Data Kelompok Tani',
+                        style: TextStyle(color: Colors.blueGrey),
+                      ),
+                      Divider(
+                        color: Colors.blueGrey,
+                      )
                     ],
                   ),
                 ),
@@ -148,52 +193,50 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Colors.blueAccent),
         ),
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Container(
-          child: Center(
+      body: Container(
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            scrollDirection: Axis.vertical,
             child: Column(
               children: <Widget>[
                 Container(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        width: width * 1,
-                        padding: EdgeInsets.only(left: width * 0.08, top: height * 0.02),
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          'Jumlah Bantuan',
-                          style:
-                          GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: 18),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.90,
-                        height: height * 0.30,
-                        child: Expanded(
-                          child: Row(
-                            children: <Widget>[
-                              CategoriesRow(),
-                              PieChartView(),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        margin: EdgeInsets.only(left: width * 0.08),
-                        child: Text('Terakhir ditambahkan', style:
-                        GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: 18),),
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        width: width,
-                        alignment: Alignment.topCenter,
-                        height: height * 0.27,
-                        child: LastAdded(fData),
-                      ),
-                    ],
+                  width: width * 1,
+                  padding:
+                      EdgeInsets.only(left: width * 0.08, top: height * 0.02),
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    'Jumlah Bantuan',
+                    style: GoogleFonts.rubik(
+                        fontWeight: FontWeight.w400, fontSize: 18),
                   ),
+                ),
+                Container(
+                  width: width * 0.90,
+                  height: height * 0.30,
+                  child:  Row(
+                      children: <Widget>[
+                        CategoriesRow(keyCategory: keyCategory,),
+                        PieChartView(keyCategory: keyCategory,),
+                      ],
+                    ),
+                ),
+                Container(
+                  alignment: Alignment.topLeft,
+                  margin: EdgeInsets.only(left: width * 0.08),
+                  child: Text(
+                    'Terakhir ditambahkan',
+                    style: GoogleFonts.rubik(
+                        fontWeight: FontWeight.w400, fontSize: 18),
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: width,
+                  alignment: Alignment.topCenter,
+                  height: height * 0.27,
+                  child: LastAdded(dData),
                 ),
               ],
             ),
@@ -203,11 +246,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-class LastAdded extends StatelessWidget {
-  List fData;
-  LastAdded(this.fData);
 
-  var colors =[
+// ignore: must_be_immutable
+class LastAdded extends StatelessWidget {
+  final List<DakotaModel> dData;
+  LastAdded(this.dData);
+
+  var colors = [
     Colors.teal.shade400,
     Colors.blue.shade400,
     Colors.deepPurpleAccent.shade400,
@@ -224,55 +269,81 @@ class LastAdded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context);
+    BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context);
     final double categoryHeight =
         MediaQuery.of(context).size.height * 0.30 - 50;
     return SafeArea(
       child: ListView.builder(
           physics: BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
-          itemCount: fData.length,
-          itemBuilder: (context, index){
-            var c = random.nextInt(
-                colors.length);
-            final _data = fData[index];
-            return Container(
-                width: 150,
-                margin: EdgeInsets.symmetric(vertical: 35, horizontal: 10),
-                height: categoryHeight,
-                decoration: BoxDecoration(
-                    color: colors[c],
-                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                child: InkWell(
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DakotaView(_data['name'])));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          _data['name'],
-                          style: TextStyle(
-                              fontSize: 25,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          _data['kelurahan'],
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            );
-          }
-      ),
+          itemCount: dData.length,
+          itemBuilder: (context, index) {
+            var c = random.nextInt(colors.length);
+            final _data = dData[index];
+            return HorizontalCardItem(categoryHeight: categoryHeight, colors: colors, c: c, authProvider: authProvider, dakotaProvider: dakotaProvider, data: _data, bantuanUsaha: bantuanUsaha);
+          }),
     );
   }
 }
 
+class HorizontalCardItem extends StatelessWidget {
+  const HorizontalCardItem({
+    Key key,
+    @required this.categoryHeight,
+    @required this.colors,
+    @required this.c,
+    @required this.authProvider,
+    @required this.dakotaProvider,
+    @required DakotaModel data,
+    @required this.bantuanUsaha,
+  }) : _data = data, super(key: key);
+
+  final double categoryHeight;
+  final List<Color> colors;
+  final int c;
+  final AuthProvider authProvider;
+  final DakotaProvider dakotaProvider;
+  final DakotaModel _data;
+  final BantuanUsaha bantuanUsaha;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 150,
+      margin: EdgeInsets.symmetric(vertical: 35, horizontal: 10),
+      height: categoryHeight,
+      decoration: BoxDecoration(
+          color: colors[c],
+          borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      child: InkWell(
+        onTap: () async {
+          await DakotaApi.getPersonalGroup(context, authProvider, dakotaProvider, _data.id, bantuanUsaha);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                _data.namaKelompok,
+                style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                _data.kelurahan,
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

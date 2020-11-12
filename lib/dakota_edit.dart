@@ -1,31 +1,74 @@
-
-//import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/auth.dart';
+import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-//import 'package:provider/provider.dart';
 
-class DakotaAdd extends StatefulWidget {
+class DakotaEdit extends StatelessWidget {
+
+  final List<DakotaModel> listDakota;
+  DakotaEdit(this.listDakota);
+
   @override
-  _DakotaAddState createState() => _DakotaAddState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Perbarui Informasi'),
+      ),
+      body: Center(
+        child: DakotaEditingForm(listDakota),
+      )
+    );
+  }
 }
 
-class _DakotaAddState extends State<DakotaAdd> {
-  final TextEditingController _namacontroller = TextEditingController();
-  final TextEditingController _namaketuacontroller = TextEditingController();
-  final TextEditingController alamatcontroller = TextEditingController();
-  final TextEditingController _kelurahandesacontroller = TextEditingController();
-  final TextEditingController _kecamatancontroller = TextEditingController();
-  final TextEditingController _jumlahanggota = TextEditingController();
-  final TextEditingController _luaslahancontroller = TextEditingController();
+class DakotaEditingForm extends StatefulWidget {
+  final List<DakotaModel> listDakota;
 
-  bool asTabs = false;
-  String jenisLahan = 'pilih salah satu';
-  String bidangUsaha = 'pilih salah satu';
-  String subBidangUsahaa = 'pilih salah satu';
+  DakotaEditingForm(this.listDakota);
+  @override
+  _DakotaEditingFormState createState() => _DakotaEditingFormState();
+}
+
+class _DakotaEditingFormState extends State<DakotaEditingForm> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
+  TextEditingController _namacontroller = TextEditingController();
+  TextEditingController _namaketuacontroller = TextEditingController();
+  TextEditingController _alamatcontroller = TextEditingController();
+  TextEditingController _kelurahandesacontroller = TextEditingController();
+  TextEditingController _kecamatancontroller = TextEditingController();
+  TextEditingController _jumlahanggota = TextEditingController();
+  TextEditingController _luaslahancontroller = TextEditingController();
+
+  void initEdit(){
+    final dData = widget.listDakota.first;
+
+    _namacontroller.text = TextEditingController(text: dData.namaKelompok) as String;
+    _namaketuacontroller = TextEditingController(text: dData.namaKetua);
+    _alamatcontroller = TextEditingController(text: dData.alamat);
+    _kelurahandesacontroller = TextEditingController(text: dData.kelurahan);
+    _kecamatancontroller = TextEditingController(text: dData.kecamatan);
+    _jumlahanggota = TextEditingController(text: dData.jumlahAnggota.toString());
+    _luaslahancontroller = TextEditingController(text: dData.luasLahan.toString());
+    setState(() {
+      jenisLahan = dData.jenisLahan;
+      bidangUsaha = dData.bidangUsaha;
+      subBidangUsahaa = dData.subBidangUsaha;
+    });
+  }
+
+  String jenisLahan;
+  String bidangUsaha;
+  String subBidangUsahaa;
   bool boolLainnya = false;
-  final List<DropdownMenuItem> items = [];
+
   final List<String> tanamanPangan = [
     'Padi',
     'Jagung',
@@ -82,55 +125,6 @@ class _DakotaAddState extends State<DakotaAdd> {
 
   List<String> subBidangUsaha = [];
 
-  final String loremIpsum =
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-
-  List<Widget> get appBarActions {
-    return ([
-      Center(child: Text("Tabs:")),
-      Switch(
-        activeColor: Colors.white,
-        value: asTabs,
-        onChanged: (value) {
-          setState(() {
-            asTabs = value;
-          });
-        },
-      )
-    ]);
-  }
-
-  @override
-  void initState() {
-    String wordPair = "";
-    loremIpsum
-        .toLowerCase()
-        .replaceAll(",", "")
-        .replaceAll(".", "")
-        .split(" ")
-        .forEach((word) {
-      if (wordPair.isEmpty) {
-        wordPair = word + " ";
-      } else {
-        wordPair += word;
-        if (items.indexWhere((item) {
-          return (item.value == wordPair);
-        }) ==
-            -1) {
-          items.add(DropdownMenuItem(
-            child: Text(wordPair),
-            value: wordPair,
-          ));
-        }
-        wordPair = "";
-      }
-    });
-
-    lainnyaInput = Text('');
-    super.initState();
-  }
-
-  Widget lainnyaInput;
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +135,6 @@ class _DakotaAddState extends State<DakotaAdd> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Tambah Data Kelompok Tani'),
-      ),
       body: Container(
         padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05, top: height * 0.04),
         child: SingleChildScrollView(
@@ -172,7 +163,7 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               TextField(
-                controller: alamatcontroller,
+                controller: _alamatcontroller,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
                 decoration: InputDecoration(
@@ -368,7 +359,7 @@ class _DakotaAddState extends State<DakotaAdd> {
               ),
               Divider(),
               FlatButton(onPressed: ()async{
-                DakotaApi.createDakota(context,authProvider, _namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
+                DakotaApi.createDakota(context,authProvider, _namacontroller.text,_namacontroller.text,_alamatcontroller.text,_kecamatancontroller.text
                     ,_kelurahandesacontroller.text,'-7,1343857','8,2353287',_namaketuacontroller.text,int.parse(_jumlahanggota.text),
                     jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
               }, child: Text('submit'))

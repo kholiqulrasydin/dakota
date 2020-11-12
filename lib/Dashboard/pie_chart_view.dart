@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 class PieChartView extends StatelessWidget {
   const PieChartView({
-    Key key,
+    Key key, this.keyCategory
   }) : super(key: key);
+
+  final List keyCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class PieChartView extends StatelessWidget {
                     child: Center(),
                     foregroundPainter: PieChart(
                       width: constraint.maxWidth * 0.5,
-                      categories: kCategories,
+                      categories: keyCategory,
                     ),
                   ),
                 ),

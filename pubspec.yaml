@@ -51,6 +51,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/
     - assets/Lambang_Kabupaten_Ponorogo.png
   #   - images/a_dot_ham.jpeg
 

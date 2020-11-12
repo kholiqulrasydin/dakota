@@ -3,21 +3,21 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 class BantuanUsahaModel{
   int id;
-  int id_dakota;
+  int idDakota;
   String nama;
   String detail;
   String status;
   int jumlah;
-  DateTime tahun;
+  String tahun;
   String keterangan;
 
 
-  BantuanUsahaModel({this.id,this.id_dakota,this.nama,this.detail,this.status,this.jumlah,this.tahun,this.keterangan});
+  BantuanUsahaModel({this.id,this.idDakota,this.nama,this.detail,this.status,this.jumlah,this.tahun,this.keterangan});
 
   factory BantuanUsahaModel.fromJson(Map<String, dynamic> json) {
     return BantuanUsahaModel(
       id: json['id'],
-      id_dakota: json['id_dakota'],
+      idDakota: json['id_dakota'],
       nama: json['nama'],
       detail: json['detail'],
       status: json['status'],
@@ -27,20 +27,20 @@ class BantuanUsahaModel{
     );
   }
   //create data
-  Future<BantuanUsahaModel> createBantuanUsaha(int id_dakota,String nama,String detail,String status
-      ,int jumlah,DateTime tahun,String keterangan) async {
+  Future<BantuanUsahaModel> createBantuanUsaha(int idDakota,String nama,String detail,String status
+      ,int jumlah,String tahun,String keterangan) async {
     final http.Response response = await http.post(
       'https://jsonplaceholder.typicode.com/albums',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'id_dakota': id_dakota.toString(),
+        'id_dakota': idDakota.toString(),
         'nama': nama,
         'detail': detail,
         'status': status,
         'jumlah': jumlah.toString(),
-        'tahun': tahun.toString(),
+        'tahun': tahun,
         'keterangan': keterangan,
 
       }),
@@ -53,7 +53,7 @@ class BantuanUsahaModel{
     }
   }
   //update data
-  Future<BantuanUsahaModel> updateBantuan(int id_dakota,String nama,String detail,String status
+  Future<BantuanUsahaModel> updateBantuan(int idDakota,String nama,String detail,String status
       ,int jumlah,DateTime tahun,String keterangan) async {
     final http.Response response = await http.put(
       'https://jsonplaceholder.typicode.com/albums/1',
@@ -61,7 +61,7 @@ class BantuanUsahaModel{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'id_dakota': id_dakota.toString(),
+        'id_dakota': idDakota.toString(),
         'nama': nama,
         'detail': detail,
         'status': status,

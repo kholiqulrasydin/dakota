@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 class CategoriesRow extends StatelessWidget {
   const CategoriesRow({
-    Key key,
+    Key key, @required this.keyCategory
   }) : super(key: key);
+
+  final List keyCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +15,9 @@ class CategoriesRow extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          for (var category in kCategories)
+          for (var category in keyCategory)
             ExpenseCategory(
-                text: category.name, index: kCategories.indexOf(category))
+                text: category.name, index: keyCategory.indexOf(category))
         ],
       ),
     );

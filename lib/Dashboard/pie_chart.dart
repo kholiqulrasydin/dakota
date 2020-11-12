@@ -59,6 +59,7 @@ class Category {
   final double amount;
 }
 
+
 final kCategories = [
   Category('453 Alsintan', amount: 453.00),
   Category('150 SARPRAS', amount: 150.00),
