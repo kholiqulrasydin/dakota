@@ -1,3 +1,4 @@
+import 'package:dakota/Services/auth.dart';
 import 'package:dakota/animations/fade_in.dart';
 import 'package:dakota/login_page.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,14 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: ListView(
         children: <Widget>[
           Container(
@@ -46,10 +52,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     width: 100.0,
                     height: 100.0,
                     decoration: new BoxDecoration(
-                      image: new DecorationImage(
-                        image: new AssetImage('assets/GoKart.png'),
-                        fit: BoxFit.cover,
-                      ),
+//                      image: new DecorationImage(
+//                        image: new AssetImage('assets/GoKart.png'),
+//                        fit: BoxFit.cover,
+//                      ),
                     ),
                   ),
                 ),
@@ -59,6 +65,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 FadeIn(
                   1.4,
                   TextField(
+                    controller: _controller,
                     decoration: InputDecoration(
                       hintText: 'Registered Email Address',
                       contentPadding:
@@ -105,11 +112,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         ),
                       ),
                     ),
-                    onTap: () {
-//                      Navigator.push(
-//                        context,
-//                        MaterialPageRoute(builder: (context) => Signup()),
-//                      );
+                    onTap: () async {
+                      await AuthServices.forgotPassword(_scaffoldKey, _controller.text.toString());
                     },
                   ),
                 ),

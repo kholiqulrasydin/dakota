@@ -1,25 +1,28 @@
 import 'package:dakota/Dashboard/pie_chart.dart';
+import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CategoriesRow extends StatelessWidget {
   const CategoriesRow({
-    Key key, @required this.keyCategory
+    Key key,
   }) : super(key: key);
 
-  final List keyCategory;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 3,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          for (var category in keyCategory)
-            ExpenseCategory(
-                text: category.name, index: keyCategory.indexOf(category))
-        ],
-      ),
+    return Consumer<BantuanUsaha>(
+        builder: (_, bantuanUsaha, __)=> Expanded(
+        flex: 3,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            for (var category in bantuanUsaha.jData)
+              ExpenseCategory(
+                  text: category.name, index: bantuanUsaha.jData.indexOf(category))
+          ],
+        ),
+      )
     );
   }
 }

@@ -7,13 +7,27 @@ import 'package:flutter/cupertino.dart';
 
 class DakotaProvider with ChangeNotifier{
   List<DakotaModel> _dakotaList = [];
+  List<DakotaModel> _dakotaListLatest = [];
+  List<DakotaModel> _dakotaListOnce = [];
   DakotaProvider _currentDakota;
 
   UnmodifiableListView<DakotaModel> get dakotaList => UnmodifiableListView(_dakotaList);
+  UnmodifiableListView<DakotaModel> get dakotaListLatest => UnmodifiableListView(_dakotaListLatest);
+  UnmodifiableListView<DakotaModel> get dakotaListOnce => UnmodifiableListView(_dakotaListOnce);
   DakotaProvider get dakotaProvider => _currentDakota;
 
   set dakotaList(List<DakotaModel> dakotaList){
     _dakotaList = dakotaList;
+    notifyListeners();
+  }
+
+  set dakotaListLatest(List<DakotaModel> dakotaList){
+    _dakotaListLatest = dakotaList;
+    notifyListeners();
+  }
+
+  set dakotaListOnce(List<DakotaModel> dakotaList){
+    _dakotaListOnce = dakotaList;
     notifyListeners();
   }
 

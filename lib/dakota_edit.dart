@@ -24,20 +24,13 @@ class DakotaEdit extends StatelessWidget {
 
 class DakotaEditingForm extends StatefulWidget {
   final List<DakotaModel> listDakota;
-
   DakotaEditingForm(this.listDakota);
+
   @override
   _DakotaEditingFormState createState() => _DakotaEditingFormState();
 }
 
 class _DakotaEditingFormState extends State<DakotaEditingForm> {
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-  }
 
   TextEditingController _namacontroller = TextEditingController();
   TextEditingController _namaketuacontroller = TextEditingController();
@@ -50,13 +43,14 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
   void initEdit(){
     final dData = widget.listDakota.first;
 
-    _namacontroller.text = TextEditingController(text: dData.namaKelompok) as String;
-    _namaketuacontroller = TextEditingController(text: dData.namaKetua);
-    _alamatcontroller = TextEditingController(text: dData.alamat);
-    _kelurahandesacontroller = TextEditingController(text: dData.kelurahan);
-    _kecamatancontroller = TextEditingController(text: dData.kecamatan);
-    _jumlahanggota = TextEditingController(text: dData.jumlahAnggota.toString());
-    _luaslahancontroller = TextEditingController(text: dData.luasLahan.toString());
+    print(dData.toString());
+    _namacontroller.text = new TextEditingController(text: dData.namaKelompok) as String;
+    _namaketuacontroller = new TextEditingController(text: dData.namaKetua);
+    _alamatcontroller = new TextEditingController(text: dData.alamat);
+    _kelurahandesacontroller = new TextEditingController(text: dData.kelurahan);
+    _kecamatancontroller = new TextEditingController(text: dData.kecamatan);
+    _jumlahanggota = new TextEditingController(text: dData.jumlahAnggota.toString());
+    _luaslahancontroller = new TextEditingController(text: dData.luasLahan.toString());
     setState(() {
       jenisLahan = dData.jenisLahan;
       bidangUsaha = dData.bidangUsaha;
@@ -68,6 +62,14 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
   String bidangUsaha;
   String subBidangUsahaa;
   bool boolLainnya = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initEdit();
+  }
+
 
   final List<String> tanamanPangan = [
     'Padi',

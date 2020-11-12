@@ -36,6 +36,7 @@ class _DakotaViewState extends State<DakotaView> {
       body: Container(
         padding: EdgeInsets.only(left: 16, top: 25, right: 16),
         child: ListView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           children: [
             Text(
               "${widget._dakota.first.namaKelompok}",

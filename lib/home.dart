@@ -6,6 +6,7 @@ import 'package:dakota/Services/auth.dart';
 import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/animations/loader.dart';
 import 'package:dakota/dakota_add.dart';
 import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/edit_profile_page.dart';
@@ -29,23 +30,16 @@ class _HomePageState extends State<HomePage> {
   List<DakotaModel> dData = [];
   List<Category> keyCategory =[];
 
-  static Future<void> refreshLatest(AuthProvider authProvider, BantuanUsaha bantuanUsaha, DakotaProvider dakotaProvider) async {
-    await DakotaApi.getLast(authProvider, dakotaProvider);
-    await BantuanUsahaApi.getCountData(authProvider, bantuanUsaha);
+  void refreshLatest(BantuanUsaha bantuanUsaha, DakotaProvider dakotaProvider) async {
+    await DakotaApi.getLast(dakotaProvider);
+    await BantuanUsahaApi.getCountData(bantuanUsaha);
   }
 
-  void setData(DakotaProvider dakotaProvider, BantuanUsaha bantuanUsaha) {
+  void setData(DakotaProvider dakotaProvider, BantuanUsaha bantuanUsaha) async {
     setState(() {
       dData = dakotaProvider.dakotaList;
-      keyCategory = [
-        Category('${bantuanUsaha.countAlsintan} Alsintan', amount: double.parse(bantuanUsaha.countAlsintan)),
-        Category('${bantuanUsaha.countSarpras} SARPRAS', amount: double.parse(bantuanUsaha.countSarpras)),
-        Category('${bantuanUsaha.countBibit} Bibit/Benih', amount: double.parse(bantuanUsaha.countBibit)),
-        Category('${bantuanUsaha.countTernak} Ternak', amount: double.parse(bantuanUsaha.countTernak)),
-        Category('${bantuanUsaha.countPerikanan} Perikanan', amount: double.parse(bantuanUsaha.countPerikanan)),
-        Category('${bantuanUsaha.countLainnya} Lainnya', amount: double.parse(bantuanUsaha.countLainnya)),
-      ];
     });
+    bantuanUsaha.jData = keyCategory;
   }
 
   @override
@@ -55,12 +49,12 @@ class _HomePageState extends State<HomePage> {
     _onRefresh();
   }
   Future<void> _onRefresh() async {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
     BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context, listen: false);
     DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context, listen: false);
 
-    await refreshLatest(authProvider, bantuanUsaha, dakotaProvider);
+    refreshLatest(bantuanUsaha, dakotaProvider);
     return setData(dakotaProvider, bantuanUsaha);
+
     }
 
   @override
@@ -68,181 +62,197 @@ class _HomePageState extends State<HomePage> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    return new Scaffold(
-      backgroundColor: Colors.white,
-      key: _drawerKey,
-      drawer: Drawer(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    margin:
-                        EdgeInsets.only(top: height * 0.04, left: width * 0.02),
-                    alignment: Alignment.topLeft,
-                    child: Row(
+//    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context);
+    BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context);
+
+    refreshLatest(bantuanUsaha, dakotaProvider);
+
+    return Consumer<BantuanUsaha>(
+      builder: (_, bantuanUsaha, __){
+        return Loader(
+          inAsyncCall: bantuanUsaha.jData.isEmpty,
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            key: _drawerKey,
+            drawer: Drawer(
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    Row(
                       children: <Widget>[
-                        Text(
-                          'Profil ',
-                          style: TextStyle(color: Colors.blueGrey),
-                          textAlign: TextAlign.right,
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.person),
-                            onPressed: () async {
+                        Container(
+                          margin:
+                          EdgeInsets.only(top: height * 0.04, left: width * 0.02),
+                          alignment: Alignment.topLeft,
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                'Profil ',
+                                style: TextStyle(color: Colors.blueGrey),
+                                textAlign: TextAlign.right,
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.person),
+                                  onPressed: () async {
 //                              await BantuanUsahaApi.getCountData(authProvider, bantuanUsaha);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => EditProfilePage()));
-                            }),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: height * 0.04,
-                        left: width * 0.26,
-                        right: width * 0.02),
-                    alignment: Alignment.topRight,
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          'Logout ',
-                          style: TextStyle(color: Colors.blueGrey),
-                          textAlign: TextAlign.right,
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) => EditProfilePage()));
+                                  }),
+                            ],
+                          ),
                         ),
-                        IconButton(
-                            icon: Icon(Icons.launch),
-                            onPressed: () async {
-                              AuthProvider authProvider = Provider.of<AuthProvider>(context);
-                              await AuthServices.signOut(context, authProvider);
-                            }),
+                        Container(
+                          margin: EdgeInsets.only(
+                              top: height * 0.04,
+                              left: width * 0.26,
+                              right: width * 0.02),
+                          alignment: Alignment.topRight,
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                'Logout ',
+                                style: TextStyle(color: Colors.blueGrey),
+                                textAlign: TextAlign.right,
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.launch),
+                                  onPressed: () async {
+                                    await AuthServices.signOut(context);
+                                  }),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
+                    Container(
+                      margin:
+                      EdgeInsets.only(top: height * 0.05, bottom: height * 0.03),
+                      padding: EdgeInsets.all(width * 0.17),
+                      child: Image.asset('assets/Lambang_Kabupaten_Ponorogo.png'),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DakotaAdd()),
+                        );
+                      },
+                      child: Container(
+                        width: width * 0.60,
+                        margin: EdgeInsets.only(bottom: height * 0.03),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'Tambah Data',
+                              style: TextStyle(color: Colors.blueGrey),
+                            ),
+                            Divider(
+                              color: Colors.blueGrey,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DarkotaViewAll()),
+                        );
+                      },
+                      child: Container(
+                        width: width * 0.60,
+                        margin: EdgeInsets.only(bottom: height * 0.03),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'Lihat Semua Data Kelompok Tani',
+                              style: TextStyle(color: Colors.blueGrey),
+                            ),
+                            Divider(
+                              color: Colors.blueGrey,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            appBar: AppBar(
+              leading: IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    color: Colors.blueGrey,
                   ),
-                ],
+                  onPressed: () {
+                    _drawerKey.currentState.openDrawer();
+                  }),
+              backgroundColor: Colors.white,
+              title: Text(
+                'Data Kelompok Tani',
+                style: TextStyle(color: Colors.blueAccent),
               ),
-              Container(
-                margin:
-                    EdgeInsets.only(top: height * 0.05, bottom: height * 0.03),
-                padding: EdgeInsets.all(width * 0.17),
-                child: Image.asset('assets/Lambang_Kabupaten_Ponorogo.png'),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DakotaAdd()),
-                  );
-                },
-                child: Container(
-                  width: width * 0.60,
-                  margin: EdgeInsets.only(bottom: height * 0.03),
+            ),
+            body: Container(
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                  scrollDirection: Axis.vertical,
                   child: Column(
                     children: <Widget>[
-                      Text(
-                        'Tambah Data',
-                        style: TextStyle(color: Colors.blueGrey),
+                      Container(
+                        width: width * 1,
+                        padding:
+                        EdgeInsets.only(left: width * 0.08, top: height * 0.02),
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          'Jumlah Bantuan',
+                          style: GoogleFonts.rubik(
+                              fontWeight: FontWeight.w400, fontSize: 18),
+                        ),
                       ),
-                      Divider(
-                        color: Colors.blueGrey,
-                      )
+                      Consumer<BantuanUsaha>(
+                        builder: (_, bantuanUsaha, __) {
+                          return Container(
+                            width: width * 0.90,
+                            height: height * 0.30,
+                            child:  Row(
+                              children: <Widget>[
+                                CategoriesRow(),
+                                PieChartView(),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: EdgeInsets.only(left: width * 0.08),
+                        child: Text(
+                          'Terakhir ditambahkan',
+                          style: GoogleFonts.rubik(
+                              fontWeight: FontWeight.w400, fontSize: 18),
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: width,
+                        alignment: Alignment.topCenter,
+                        height: height * 0.27,
+                        child: LastAdded(dData),
+                      ),
                     ],
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DarkotaViewAll()),
-                  );
-                },
-                child: Container(
-                  width: width * 0.60,
-                  margin: EdgeInsets.only(bottom: height * 0.03),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Lihat Semua Data Kelompok Tani',
-                        style: TextStyle(color: Colors.blueGrey),
-                      ),
-                      Divider(
-                        color: Colors.blueGrey,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: Colors.blueGrey,
-            ),
-            onPressed: () {
-              _drawerKey.currentState.openDrawer();
-            }),
-        backgroundColor: Colors.white,
-        title: Text(
-          'Data Kelompok Tani',
-          style: TextStyle(color: Colors.blueAccent),
-        ),
-      ),
-      body: Container(
-        child: RefreshIndicator(
-          onRefresh: _onRefresh,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  width: width * 1,
-                  padding:
-                      EdgeInsets.only(left: width * 0.08, top: height * 0.02),
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    'Jumlah Bantuan',
-                    style: GoogleFonts.rubik(
-                        fontWeight: FontWeight.w400, fontSize: 18),
-                  ),
-                ),
-                Container(
-                  width: width * 0.90,
-                  height: height * 0.30,
-                  child:  Row(
-                      children: <Widget>[
-                        CategoriesRow(keyCategory: keyCategory,),
-                        PieChartView(keyCategory: keyCategory,),
-                      ],
-                    ),
-                ),
-                Container(
-                  alignment: Alignment.topLeft,
-                  margin: EdgeInsets.only(left: width * 0.08),
-                  child: Text(
-                    'Terakhir ditambahkan',
-                    style: GoogleFonts.rubik(
-                        fontWeight: FontWeight.w400, fontSize: 18),
-                  ),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: width,
-                  alignment: Alignment.topCenter,
-                  height: height * 0.27,
-                  child: LastAdded(dData),
-                ),
-              ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -276,7 +286,7 @@ class LastAdded extends StatelessWidget {
         MediaQuery.of(context).size.height * 0.30 - 50;
     return SafeArea(
       child: ListView.builder(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           scrollDirection: Axis.horizontal,
           itemCount: dData.length,
           itemBuilder: (context, index) {
@@ -319,7 +329,7 @@ class HorizontalCardItem extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(20.0))),
       child: InkWell(
         onTap: () async {
-          await DakotaApi.getPersonalGroup(context, authProvider, dakotaProvider, _data.id, bantuanUsaha);
+          await DakotaApi.getPersonalGroup(context, dakotaProvider, _data.id, bantuanUsaha);
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
