@@ -64,7 +64,7 @@ class _DakotaViewState extends State<DakotaView> {
                   ],
                 ),
                 IconButton(icon: Icon(Icons.edit, color: Colors.blueAccent,), onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> DakotaEdit(widget._dakota)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> DakotaEditingForm(widget._dakota)));
                 },)
               ],
             ),

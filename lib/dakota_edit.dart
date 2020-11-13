@@ -1,26 +1,11 @@
 import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/auth.dart';
+import 'package:dakota/Services/providers/bantuan_usaha.dart';
+import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DakotaEdit extends StatelessWidget {
-
-  final List<DakotaModel> listDakota;
-  DakotaEdit(this.listDakota);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Perbarui Informasi'),
-      ),
-      body: Center(
-        child: DakotaEditingForm(listDakota),
-      )
-    );
-  }
-}
 
 class DakotaEditingForm extends StatefulWidget {
   final List<DakotaModel> listDakota;
@@ -44,20 +29,22 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
     final dData = widget.listDakota.first;
 
     print(dData.toString());
-    _namacontroller.text = new TextEditingController(text: dData.namaKelompok) as String;
     _namaketuacontroller = new TextEditingController(text: dData.namaKetua);
     _alamatcontroller = new TextEditingController(text: dData.alamat);
     _kelurahandesacontroller = new TextEditingController(text: dData.kelurahan);
     _kecamatancontroller = new TextEditingController(text: dData.kecamatan);
     _jumlahanggota = new TextEditingController(text: dData.jumlahAnggota.toString());
     _luaslahancontroller = new TextEditingController(text: dData.luasLahan.toString());
+    _namacontroller = new TextEditingController(text: dData.namaKelompok);
     setState(() {
       jenisLahan = dData.jenisLahan;
       bidangUsaha = dData.bidangUsaha;
       subBidangUsahaa = dData.subBidangUsaha;
+      id = dData.id;
     });
   }
 
+  int id;
   String jenisLahan;
   String bidangUsaha;
   String subBidangUsahaa;
@@ -137,9 +124,14 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('Perbarui Data Kelompok'),
+      ),
       body: Container(
-        padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05, top: height * 0.04),
+        padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05, top: height * 0.02),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
           child: Column(
             children: <Widget>[
               TextField(
@@ -361,9 +353,12 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
               ),
               Divider(),
               FlatButton(onPressed: ()async{
-                DakotaApi.createDakota(context,authProvider, _namacontroller.text,_namacontroller.text,_alamatcontroller.text,_kecamatancontroller.text
+
+                BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context, listen: false);
+                DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context, listen: false);
+                DakotaApi.updateDakota(context,authProvider, bantuanUsaha, dakotaProvider, _namacontroller.text,_namacontroller.text,_alamatcontroller.text,_kecamatancontroller.text
                     ,_kelurahandesacontroller.text,'-7,1343857','8,2353287',_namaketuacontroller.text,int.parse(_jumlahanggota.text),
-                    jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
+                    jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa, id);
               }, child: Text('submit'))
             ],
           ),

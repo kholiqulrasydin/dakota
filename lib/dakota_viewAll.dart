@@ -256,21 +256,55 @@ class ViewSearch extends SearchDelegate<DakotaModel> {
 
   @override
   Widget buildLeading(BuildContext context) {
+    DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context, listen: false);
+    AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
     // TODO: implement buildLeading
     return IconButton(
         icon: AnimatedIcon(
             icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
         onPressed: () {
           close(context, null);
+          replaceWithAll(authProvider, dakotaProvider);
         });
   }
 
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
+    return Consumer<BantuanUsaha>(
+        builder: (_, bantuanUsaha, __){
+          return Consumer<AuthProvider>(
+              builder: (_, authProvider,__){
+                return Consumer<DakotaProvider>(
+                    builder: (_, dakotaProvider,__){
+                      return ListView.builder(
+                          physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics()),
+                          itemCount: dakotaProvider.dakotaList.length,
+                          itemBuilder: (context, index){
+                            final dData = dakotaProvider.dakotaList[index];
+
+                            return InkWellContainer(
+                                authProvider: authProvider,
+                                dakotaProvider: dakotaProvider,
+                                dakotaData: dData,
+                                bantuanUsaha: bantuanUsaha
+                            );
+                          }
+                      );
+                    }
+                );
+              }
+          );
+        }
+    );
   }
 
-  void startSearch(String quey, DakotaProvider dakotaProvider) async {
+  void replaceWithAll(AuthProvider authProvider, DakotaProvider dakotaProvider)async{
+    await DakotaApi.fetchDakota(authProvider, dakotaProvider, 'all');
+  }
+
+  void startSearch(String query, DakotaProvider dakotaProvider) async {
     await DakotaApi.searchDakota(query, dakotaProvider);
   }
 
@@ -338,6 +372,8 @@ class ViewSearch extends SearchDelegate<DakotaModel> {
                 return Consumer<DakotaProvider>(
                     builder: (_, dakotaProvider,__){
                       return ListView.builder(
+                          physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics()),
                           itemCount: dakotaProvider.dakotaList.length,
                           itemBuilder: (context, index){
                             final dData = dakotaProvider.dakotaList[index];

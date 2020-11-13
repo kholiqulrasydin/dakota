@@ -65,6 +65,60 @@ class DakotaApi{
 
   }
 
+  static Future<void> updateDakota(
+      BuildContext context,
+      AuthProvider authProvider,
+      BantuanUsaha bantuanUsaha,
+      DakotaProvider dakotaProvider,
+      String namaKelompok,
+      String nomorRegister,
+      String alamat,
+      String kecamatan,
+      String kelurahan,
+      String geoLatitude,
+      String geoLongtitude,
+      String namaKetua,
+      int jumlahAnggota,
+      String jenisLahan,
+      int luasLahan,
+      String bidangUsaha,
+      String subBidangUsaha,
+      int id) async {
+    print(authProvider.currentToken);
+    await http.put(
+        'http://apidinper.reboeng.com/api/dakota/$id',
+        headers: <String, String>{
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${authProvider.currentToken}'
+        },
+        body: {
+          'nama_kelompok': namaKelompok,
+          'nomor_register': nomorRegister,
+          'alamat': alamat,
+          'kecamatan': kecamatan,
+          'kelurahan': kelurahan,
+          'geo_latitude': geoLatitude,
+          'geo_longtitude': geoLongtitude,
+          'nama_ketua': namaKetua,
+          'jumlah_anggota': jumlahAnggota.toString(),
+          'jenis_lahan': jenisLahan,
+          'luas_lahan': luasLahan.toString(),
+          'bidang_usaha': bidangUsaha,
+          'sub_bidang_usaha': subBidangUsaha,
+        }).then((response) {
+      print(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        print('oke! status ${response.statusCode}, Dakota Successfully Updated');
+        dakotaProvider.dakotaListOnce = [];
+        getPersonalGroup(context, dakotaProvider, id, bantuanUsaha);
+      } else {
+        print('Failed To Update Dakota');
+      }
+    });
+
+
+  }
+
 //delete data
   Future<void> deleteDakota(AuthProvider authProvider, String id) async {
     final http.Response response =
@@ -176,7 +230,7 @@ class DakotaApi{
       final _dakotaa = dakotaProvider.dakotaListOnce.first;
       await BantuanUsahaApi.getBantuanUsahaPersonalGroup(bantuanUsaha, _dakotaa.id);
 
-      return Navigator.push(context, MaterialPageRoute(builder: (context) => DakotaView(_dakotaa.id, dakotaProvider.dakotaList, bantuanUsaha.bantuanUsahaList)));
+      return Navigator.push(context, MaterialPageRoute(builder: (context) => DakotaView(_dakotaa.id, dakotaProvider.dakotaListOnce, bantuanUsaha.bantuanUsahaList)));
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
