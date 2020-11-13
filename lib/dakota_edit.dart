@@ -68,47 +68,51 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
   ];
 
   final List<String> hortikultura = [
-    'Padi',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Cabai kecil',
+    'Caba besar',
+    'Bawang merah',
+    'Tomat',
+    'Wortel',
+    'Pisang',
+    'Jeruk',
+    'Melon',
+    'Semangka',
     'lainnya'
   ];
 
   final List<String> biofarmaka = [
-    'Padi',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Jahe',
+    'Kunyit',
+    'Laos',
     'lainnya'
   ];
 
   final List<String> perkebunan = [
-    'Padi',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Tebu',
+    'Tembakau virginia',
+    'Tembakau jawa',
+    'Kopi robusta',
+    'Kopi arabica',
+    'Kakao',
+    'Kelapa',
+    'Cengkeh',
     'lainnya'
   ];
 
   final List<String> peternakan = [
-    'Padi',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Sapi',
+    'Kambing',
+    'Ayam petelur',
+    'Ayam Pedaging',
     'lainnya'
   ];
 
   final List<String> perikanan = [
-    'lele',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Lele',
+    'Gurami',
+    'Nila',
+    'Patin',
+    'Ikan hias',
     'lainnya'
   ];
 
@@ -188,13 +192,13 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
               Padding(
                 padding: EdgeInsets.only(top: 8.0),
               ),
-              Divider(),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.map),
-                  FlatButton(onPressed: (){}, child: Text('tentukan lokasi alamat di peta', style: TextStyle(color: Colors.blueAccent),))
-                ],
-              ),
+//              Divider(),
+//              Row(
+//                children: <Widget>[
+//                  Icon(Icons.map),
+//                  FlatButton(onPressed: (){}, child: Text('tentukan lokasi alamat di peta', style: TextStyle(color: Colors.blueAccent),))
+//                ],
+//              ),
               Divider(),
               TextField(
                 controller: _jumlahanggota,
@@ -213,7 +217,7 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
                   Icon(Icons.zoom_out_map),
                   Container(
                     margin: EdgeInsets.only(left: width * 0.04, right: width * 0.01),
-                    child: Text('Jenis Lahan '),
+                    child: Text('Lahan '),
                   ),
                   DropdownButton<String>(
                     hint: Text('$jenisLahan'),

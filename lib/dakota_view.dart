@@ -1,8 +1,15 @@
+import 'package:dakota/Services/api/bantuan_usaha.dart';
+import 'package:dakota/Services/api/dakota.dart';
+import 'package:dakota/Services/providers/bantuan_usaha.dart';
+import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/bantuan_create.dart';
 import 'package:dakota/dakota_edit.dart';
+import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/model/BantuanUsahaModel.dart';
 import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DakotaView extends StatefulWidget {
   final int id;
@@ -16,6 +23,8 @@ class DakotaView extends StatefulWidget {
 }
 
 class _DakotaViewState extends State<DakotaView> {
+  final GlobalKey<ScaffoldState> _viewKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,19 +33,27 @@ class _DakotaViewState extends State<DakotaView> {
         elevation: 1,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => DarkotaViewAll()));
           },
           icon: Icon(
-            Icons.arrow_back,
+            Icons.arrow_back_ios,
             color: Colors.blueAccent,
           ),
         ),
-        title: Text('Profil Kelompok', style: TextStyle(color: Colors.blueGrey),),
+        title: Text(
+          'Profil Kelompok',
+          style: TextStyle(color: Colors.blueGrey),
+        ),
+        actions: <Widget>[
+          DakotaDelete(widget: widget, viewKey: _viewKey,),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.only(left: 16, top: 25, right: 16),
         child: ListView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
           children: [
             Text(
               "${widget._dakota.first.namaKelompok}",
@@ -59,13 +76,24 @@ class _DakotaViewState extends State<DakotaView> {
                     ),
                     Text(
                       "Informasi Kelompok",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
-                IconButton(icon: Icon(Icons.edit, color: Colors.blueAccent,), onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> DakotaEditingForm(widget._dakota)));
-                },)
+                IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.blueAccent,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                DakotaEditingForm(widget._dakota)));
+                  },
+                )
               ],
             ),
             Divider(
@@ -75,15 +103,24 @@ class _DakotaViewState extends State<DakotaView> {
             SizedBox(
               height: 10,
             ),
-            buildAccountOptionRow(context, "Nama Kelompok", widget._dakota.first.namaKelompok),
-            buildAccountOptionRow(context, "Nomor Register", widget._dakota.first.nomorRegister),
-            buildAccountOptionRow(context, "Alamat", widget._dakota.first.alamat),
-            buildAccountOptionRow(context, "Kecamatan", widget._dakota.first.kecamatan),
-            buildAccountOptionRow(context, "Kelurahan/Desa", widget._dakota.first.kelurahan),
-            buildAccountOptionRow(context, "Nama Ketua", widget._dakota.first.namaKetua),
-            buildAccountOptionRow(context, "Jumlah Anggota", widget._dakota.first.jumlahAnggota.toString()),
-            buildAccountOptionRow(context, "Detail Lahan", widget._dakota.first.jenisLahan),
-            buildAccountOptionRow(context, "Bidang Usaha", widget._dakota.first.bidangUsaha),
+            buildAccountOptionRow(
+                context, "Nama Kelompok", widget._dakota.first.namaKelompok),
+            buildAccountOptionRow(
+                context, "Nomor Register", widget._dakota.first.nomorRegister),
+            buildAccountOptionRow(
+                context, "Alamat", widget._dakota.first.alamat),
+            buildAccountOptionRow(
+                context, "Kecamatan", widget._dakota.first.kecamatan),
+            buildAccountOptionRow(
+                context, "Kelurahan/Desa", widget._dakota.first.kelurahan),
+            buildAccountOptionRow(
+                context, "Nama Ketua", widget._dakota.first.namaKetua),
+            buildAccountOptionRow(context, "Jumlah Anggota",
+                widget._dakota.first.jumlahAnggota.toString()),
+            buildAccountOptionRow(
+                context, "Detail Lahan", widget._dakota.first.jenisLahan),
+            buildAccountOptionRow(
+                context, "Bidang Usaha", widget._dakota.first.bidangUsaha),
             SizedBox(
               height: 40,
             ),
@@ -101,11 +138,21 @@ class _DakotaViewState extends State<DakotaView> {
                     ),
                     Text(
                       "Bantuan",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
-                IconButton(icon: Icon(Icons.add, color: Colors.blueAccent,), onPressed: (){})
+                IconButton(
+                    icon: Icon(
+                      Icons.add,
+                      color: Colors.blueAccent,
+                    ),
+                    onPressed: () {
+                      print(widget.id.toString());
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => BantuanCreate(widget.id)));
+                    })
               ],
             ),
             Divider(
@@ -116,18 +163,17 @@ class _DakotaViewState extends State<DakotaView> {
               height: 10,
             ),
             Container(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: widget._bantuanUsaha.length,
-                  itemBuilder: (context, index){
-                    final _data = widget._bantuanUsaha[index];
-                    return buildDonation(context, "Bantuan Alsintan", _data.id);
-                  })
-            ),
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: widget._bantuanUsaha.length,
+                    itemBuilder: (context, index) {
+                      final _data = widget._bantuanUsaha[index];
+                      return buildDonation(context, "Bantuan ${_data.nama}",
+                          _data.id, widget._bantuanUsaha.first);
+                    })),
             SizedBox(
               height: 50,
             ),
-
           ],
         ),
       ),
@@ -155,7 +201,8 @@ class _DakotaViewState extends State<DakotaView> {
     );
   }
 
-  GestureDetector buildDonation(BuildContext context, String title, int id) {
+  GestureDetector buildDonation(
+      BuildContext context, String title, int id, BantuanUsahaModel bantuan) {
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -166,18 +213,70 @@ class _DakotaViewState extends State<DakotaView> {
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("Option 1"),
-                    Text("Option 2"),
-                    Text("Option 3"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("Jenis Bantuan : "),
+                        Text(bantuan.nama),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("Detail : "),
+                        Text(bantuan.detail),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("status : "),
+                        Text(bantuan.status),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("jumlah : "),
+                        Text("${bantuan.jumlah} paket"),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("tahun : "),
+                        Text(bantuan.tahun),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("Keterangan : "),
+                        Text(bantuan.keterangan),
+                      ],
+                    ),
                   ],
                 ),
                 actions: [
                   InkWell(
-                    onTap: (){},
+                    onTap: () async {
+                      BantuanUsaha bantuanUsaha =
+                          Provider.of<BantuanUsaha>(context, listen: false);
+                      DakotaProvider dakotaProvider =
+                          Provider.of<DakotaProvider>(context, listen: false);
+                      await BantuanUsahaApi.deleteBantuan(
+                          context, dakotaProvider, bantuanUsaha, bantuan.id);
+                    },
                     child: Row(
                       children: <Widget>[
-                        Text('Hapus', style: TextStyle(color: Colors.redAccent.shade400),),
-                        Icon(Icons.delete, color: Colors.redAccent.shade400,),
+                        Text(
+                          'Hapus',
+                          style: TextStyle(color: Colors.redAccent.shade400),
+                        ),
+                        Icon(
+                          Icons.delete,
+                          color: Colors.redAccent.shade400,
+                        ),
                       ],
                     ),
                   ),
@@ -213,7 +312,8 @@ class _DakotaViewState extends State<DakotaView> {
     );
   }
 
-  Widget buildAccountOptionRow(BuildContext context, String title, String detail) {
+  Widget buildAccountOptionRow(
+      BuildContext context, String title, String detail) {
     return Container(
       alignment: Alignment.bottomLeft,
       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
@@ -249,6 +349,55 @@ class _DakotaViewState extends State<DakotaView> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class DakotaDelete extends StatelessWidget {
+  const DakotaDelete({
+    Key key,
+    @required this.widget, @required this.viewKey
+  }) : super(key: key);
+
+  final DakotaView widget;
+  final GlobalKey<ScaffoldState> viewKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  title: Text('Hapus Data'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Apakah anda yakin ingin menghapus data ini?'),
+                      FlatButton(
+                          onPressed: () async {
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DarkotaViewAll()));
+                            await DakotaApi.deleteDakota(context, viewKey, widget.id);
+                          },
+                          child: Text(
+                            "Iya Hapus!",
+                            style: TextStyle(
+                                color: Colors.redAccent.shade400),
+                          )),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("Tidak")),
+                    ],
+                  ));
+            });
+      },
+      icon: Icon(
+        Icons.delete,
+        color: Colors.redAccent.shade400,
       ),
     );
   }

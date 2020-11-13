@@ -2,6 +2,7 @@
 //import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/auth.dart';
+import 'package:dakota/animations/sizeconfig.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 //import 'package:provider/provider.dart';
@@ -21,9 +22,9 @@ class _DakotaAddState extends State<DakotaAdd> {
   final TextEditingController _luaslahancontroller = TextEditingController();
 
   bool asTabs = false;
-  String jenisLahan = 'pilih salah satu';
-  String bidangUsaha = 'pilih salah satu';
-  String subBidangUsahaa = 'pilih salah satu';
+  String jenisLahan = 'pilih salah satu jenis lahan';
+  String bidangUsaha = 'pilih salah satu bidang usaha';
+  String subBidangUsahaa = 'pilih salah satu detail usaha';
   bool boolLainnya = false;
   final List<DropdownMenuItem> items = [];
   final List<String> tanamanPangan = [
@@ -36,47 +37,51 @@ class _DakotaAddState extends State<DakotaAdd> {
   ];
 
   final List<String> hortikultura = [
-    'Padi',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Cabai kecil',
+    'Caba besar',
+    'Bawang merah',
+    'Tomat',
+    'Wortel',
+    'Pisang',
+    'Jeruk',
+    'Melon',
+    'Semangka',
     'lainnya'
   ];
 
   final List<String> biofarmaka = [
-    'Padi',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Jahe',
+    'Kunyit',
+    'Laos',
     'lainnya'
   ];
 
   final List<String> perkebunan = [
-    'Padi',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Tebu',
+    'Tembakau virginia',
+    'Tembakau jawa',
+    'Kopi robusta',
+    'Kopi arabica',
+    'Kakao',
+    'Kelapa',
+    'Cengkeh',
     'lainnya'
   ];
 
   final List<String> peternakan = [
-    'Padi',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Sapi',
+    'Kambing',
+    'Ayam petelur',
+    'Ayam Pedaging',
     'lainnya'
   ];
 
   final List<String> perikanan = [
-    'lele',
-    'Jagung',
-    'Kedelai',
-    'Kacang Tanah',
-    'Ubi Kayu',
+    'Lele',
+    'Gurami',
+    'Nila',
+    'Patin',
+    'Ikan hias',
     'lainnya'
   ];
 
@@ -146,91 +151,97 @@ class _DakotaAddState extends State<DakotaAdd> {
       ),
       body: Container(
         padding: EdgeInsets.only(left: width * 0.05, right: width * 0.05, top: height * 0.04),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              TextField(
-                controller: _namacontroller,
-                style:
-                TextStyle(fontSize: 17.0, color: Colors.blueGrey),
-                decoration: InputDecoration(
-                    icon: Icon(Icons.apps), labelText: 'Nama Kelompok Tani'),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 8.0),
-              ),
-              Divider(),
-              TextField(
-                controller: _namaketuacontroller,
-                style:
-                TextStyle(fontSize: 17.0, color: Colors.blueGrey),
-                decoration: InputDecoration(
-                    icon: Icon(Icons.person), labelText: 'Nama Ketua'),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 8.0),
-              ),
-              Divider(),
-              TextField(
-                controller: alamatcontroller,
-                style:
-                TextStyle(fontSize: 17.0, color: Colors.blueGrey),
-                decoration: InputDecoration(
-                    icon: Icon(Icons.weekend), labelText: 'Alamat'),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 8.0),
-              ),
-              Divider(),
-              TextField(
-                controller: _kelurahandesacontroller,
-                style:
-                TextStyle(fontSize: 17.0, color: Colors.blueGrey),
-                decoration: InputDecoration(
-                    icon: Icon(Icons.account_balance), labelText: 'Kelurahan / Desa'),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 8.0),
-              ),
-              Divider(),
-              TextField(
-                controller: _kecamatancontroller,
-                style:
-                TextStyle(fontSize: 17.0, color: Colors.blueGrey),
-                decoration: InputDecoration(
-                    icon: Icon(Icons.arrow_forward), labelText: 'Kecamatan'),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 8.0),
-              ),
-              Divider(),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.map),
-                  FlatButton(onPressed: (){}, child: Text('tentukan lokasi alamat di peta', style: TextStyle(color: Colors.blueAccent),))
-                ],
-              ),
-              Divider(),
-              TextField(
-                controller: _jumlahanggota,
-                keyboardType: TextInputType.number,
-                style:
-                TextStyle(fontSize: 17.0, color: Colors.blueGrey),
-                decoration: InputDecoration(
-                    icon: Icon(Icons.wc), labelText: 'Jumlah Anggota'),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 8.0),
-              ),
-              Divider(),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.zoom_out_map),
-                  Container(
-                    margin: EdgeInsets.only(left: width * 0.04, right: width * 0.01),
-                    child: Text('Jenis Lahan '),
-                  ),
-                  DropdownButton<String>(
+        child: buildSingleChildScrollView(width, height, context, authProvider),
+      ),
+    );
+  }
+
+  SingleChildScrollView buildSingleChildScrollView(double width, double height, BuildContext context, AuthProvider authProvider) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        child: Column(
+          children: <Widget>[
+            TextField(
+              controller: _namacontroller,
+              style:
+              TextStyle(fontSize: 17.0, color: Colors.blueGrey),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.apps), labelText: 'Nama Kelompok Tani'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            TextField(
+              controller: _namaketuacontroller,
+              style:
+              TextStyle(fontSize: 17.0, color: Colors.blueGrey),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.person), labelText: 'Nama Ketua'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            TextField(
+              controller: alamatcontroller,
+              style:
+              TextStyle(fontSize: 17.0, color: Colors.blueGrey),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.weekend), labelText: 'Alamat'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            TextField(
+              controller: _kelurahandesacontroller,
+              style:
+              TextStyle(fontSize: 17.0, color: Colors.blueGrey),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.account_balance), labelText: 'Kelurahan / Desa'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            TextField(
+              controller: _kecamatancontroller,
+              style:
+              TextStyle(fontSize: 17.0, color: Colors.blueGrey),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.arrow_forward), labelText: 'Kecamatan'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+//            Divider(),
+//            Row(
+//              children: <Widget>[
+//                Icon(Icons.map),
+//                FlatButton(onPressed: (){}, child: Text('tentukan lokasi alamat di peta', style: TextStyle(color: Colors.blueAccent),))
+//              ],
+//            ),
+            Divider(),
+            TextField(
+              controller: _jumlahanggota,
+              keyboardType: TextInputType.number,
+              style:
+              TextStyle(fontSize: 17.0, color: Colors.blueGrey),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.wc), labelText: 'Jumlah Anggota'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Icon(Icons.zoom_out_map),
+                Container(
+                  margin: EdgeInsets.only(left: SizeConfig.widthMultiplier * 4.5),
+                  child: DropdownButton<String>(
                     hint: Text('$jenisLahan'),
                     items: <String>['sawah', 'non-sawah(tegal/kebun)'].map((String value) {
                       return new DropdownMenuItem<String>(
@@ -244,29 +255,28 @@ class _DakotaAddState extends State<DakotaAdd> {
                       });
                     },
                   ),
-                ],
-              ),
-              Divider(),
-              TextField(
-                controller: _luaslahancontroller,
-                keyboardType: TextInputType.number,
-                style:
-                TextStyle(fontSize: 17.0, color: Colors.blueGrey),
-                decoration: InputDecoration(
-                    icon: Icon(Icons.launch), labelText: 'Luas Lahan (meter)'),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 8.0),
-              ),
-              Divider(),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.accessibility),
-                  Container(
-                    margin: EdgeInsets.only(left: width * 0.04, right: width * 0.01),
-                    child: Text('Bidang Usaha '),
-                  ),
-                  DropdownButton<String>(
+                ),
+              ],
+            ),
+            Divider(),
+            TextField(
+              controller: _luaslahancontroller,
+              keyboardType: TextInputType.number,
+              style:
+              TextStyle(fontSize: 17.0, color: Colors.blueGrey),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.launch), labelText: 'Luas Lahan (meter)'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            Row(
+              children: <Widget>[
+                Icon(Icons.accessibility),
+                Container(
+                  margin: EdgeInsets.only(left: SizeConfig.widthMultiplier * 4.5),
+                  child: DropdownButton<String>(
                     hint: Text('$bidangUsaha'),
                     items: <String>['Tanaman Pangan', 'Hortikultura', 'Biofarmaka', 'Perkebunan', 'Peternakan', 'Perikanan'].map((String value) {
                       return new DropdownMenuItem<String>(
@@ -324,17 +334,16 @@ class _DakotaAddState extends State<DakotaAdd> {
                       }
                     },
                   ),
-                ],
-              ),
-              Divider(),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.zoom_in),
-                  Container(
-                    margin: EdgeInsets.only(left: width * 0.04, right: width * 0.01),
-                    child: Text('Detail Bidang Usaha '),
-                  ),
-                  DropdownButton<String>(
+                ),
+              ],
+            ),
+            Divider(),
+            Row(
+              children: <Widget>[
+                Icon(Icons.zoom_in),
+                Container(
+                  margin: EdgeInsets.only(left: SizeConfig.widthMultiplier * 4.5),
+                  child: DropdownButton<String>(
                     hint: Text('$subBidangUsahaa'),
                     items: subBidangUsaha.map((String value) {
                       return new DropdownMenuItem<String>(
@@ -353,30 +362,29 @@ class _DakotaAddState extends State<DakotaAdd> {
                       }
                     },
                   ),
-                ],
-              ),
-              Divider(),
-              Container(
-                margin: EdgeInsets.only(bottom: height * 0.01),
-                child: (boolLainnya) ? TextField(
-                  keyboardType: TextInputType.text,
-                  style:
-                  TextStyle(fontSize: 17.0, color: Colors.blueGrey),
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.zoom_in), labelText: 'Detail Usaha Lainnya'),
-                ) : Text(''),
-              ),
-              Divider(),
-              FlatButton(onPressed: ()async{
-                DakotaApi.createDakota(context,authProvider, _namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
-                    ,_kelurahandesacontroller.text,'-7,1343857','8,2353287',_namaketuacontroller.text,int.parse(_jumlahanggota.text),
-                    jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
-              }, child: Text('submit'))
-            ],
-          ),
+                ),
+              ],
+            ),
+            Divider(),
+            Container(
+              margin: EdgeInsets.only(bottom: height * 0.01),
+              child: (boolLainnya) ? TextField(
+                keyboardType: TextInputType.text,
+                style:
+                TextStyle(fontSize: 17.0, color: Colors.blueGrey),
+                decoration: InputDecoration(
+                    icon: Icon(Icons.zoom_in), labelText: 'Detail Usaha Lainnya'),
+              ) : Text(''),
+            ),
+            Divider(),
+            FlatButton(onPressed: ()async{
+              DakotaApi.createDakota(context,authProvider, _namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
+                  ,_kelurahandesacontroller.text,'-7,1343857','8,2353287',_namaketuacontroller.text,int.parse(_jumlahanggota.text),
+                  jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
+            }, child: Text('submit'))
+          ],
         ),
-      ),
-    );
+      );
   }
 }
 

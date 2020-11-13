@@ -1,5 +1,6 @@
 import 'package:dakota/Dashboard/pie_chart.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
+import 'package:dakota/animations/sizeconfig.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -70,7 +71,7 @@ class PieChartView extends StatelessWidget {
                         ],
                       ),
                       child: Center(
-                        child: Text('Rekapitulasi'),
+                        child: Text('Rekapitulasi', style: TextStyle(fontSize: SizeConfig.textMultiplier * 1.8),),
                       ),
                     ),
                   ),

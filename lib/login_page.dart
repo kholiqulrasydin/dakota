@@ -15,6 +15,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  final GlobalKey<ScaffoldState> _loginPageKey = new GlobalKey<ScaffoldState>();
   // Initially password is obscure
   bool _obscureText = true;
 
@@ -51,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
     DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context);
     BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context);
     return Scaffold(
+      key: _loginPageKey,
       body: ListView(
         children: <Widget>[
           Container(
@@ -67,24 +70,6 @@ class _LoginPageState extends State<LoginPage> {
                     fontFamily: 'Alatsi',
                   ),
                 ),
-//                InkWell(
-//                  child: Text(
-//                    'Sign Up',
-//                    textAlign: TextAlign.end,
-//                    style: TextStyle(
-//                      color: Colors.grey,
-//                      fontSize: 25.0,
-//                      fontWeight: FontWeight.bold,
-//                      fontFamily: 'Alatsi',
-//                    ),
-//                  ),
-//                  onTap: () {
-//                    Navigator.push(
-//                      context,
-//                      MaterialPageRoute(builder: (context) => Signup()),
-//                    );
-//                  },
-//                ),
               ],
             ),
             ),
@@ -196,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () async {
                     print('Login Start');
 //                    auth(_emailController.text, _passwordController.text);
-                    await AuthServices.signIn(context, authProvider,_emailController.text, _passwordController.text, bantuanUsaha, dakotaProvider);
+                    await AuthServices.signIn(context, _loginPageKey, authProvider,_emailController.text, _passwordController.text, bantuanUsaha, dakotaProvider);
                   },
                 ),
                 ),

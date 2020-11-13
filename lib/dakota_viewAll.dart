@@ -2,6 +2,8 @@ import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/animations/sizeconfig.dart';
+import 'package:dakota/home.dart';
 import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +77,7 @@ class _DarkotaViewAllState extends State<DarkotaViewAll> {
                   color: Colors.blueGrey,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
                 }),
             actions: <Widget>[
               IconButton(
@@ -193,7 +195,7 @@ class InkWellContainer extends StatelessWidget {
             context, dakotaProvider, dakotaData.id, bantuanUsaha);
       },
       child: Container(
-          height: 150,
+          height: 120,
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -233,9 +235,7 @@ class InkWellContainer extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(
                       top: 11, bottom: 11, right: 0, left: 10),
-                  child: Image.asset(
-                    "assets/kontjotanie.jpg",
-                  ),
+                  child: Icon(Icons.launch)
                 )
               ],
             ),
@@ -318,10 +318,6 @@ class ViewSearch extends SearchDelegate<DakotaModel> {
         'sub' : 'padi'
       },
       {
-        'title' : 'Alsintan',
-        'sub' : 'Tracktor'
-      },
-      {
         'title' : 'Hortikultura',
         'sub' : 'Semangka'
       },
@@ -356,8 +352,8 @@ class ViewSearch extends SearchDelegate<DakotaModel> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(_fetch['title'], style: TextStyle(color: Colors.blueGrey.shade400, fontSize: 24)),
-                      Text(_fetch['sub'], style: TextStyle(color: Colors.blueGrey.shade200, fontSize: 18))
+                      Text(_fetch['title'], style: TextStyle(color: Colors.blueGrey.shade400, fontSize: SizeConfig.textMultiplier * 4)),
+                      Text(_fetch['sub'], style: TextStyle(color: Colors.blueGrey.shade200, fontSize: SizeConfig.textMultiplier * 2))
                     ],
                   ),
                 ],
