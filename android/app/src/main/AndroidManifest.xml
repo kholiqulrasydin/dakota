@@ -14,7 +14,7 @@
         android:label="dakota"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBHd4HrifGrQNm_C3-8RqgyAEBXxHfDUsE"/>
+            android:value="AIzaSyAeAI2p1gW3qbx-Ft0taMyFNGF0awBwakw"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
