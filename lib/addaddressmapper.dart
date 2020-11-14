@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dakota/Services/api/dakota.dart';
+import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,9 +15,11 @@ class AddAddressMapper extends StatefulWidget {
 }
 
 class _AddAddressMapperState extends State<AddAddressMapper> {
+  String latitude,longtitude;
   Completer<GoogleMapController> _controller = Completer();
   MapType _currentMapType = MapType.normal;
   int _markerIdCounter = 0;
+  DakotaProvider dakotaProvider;
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   String _markerIdVal({bool increment = false}) {
     String val = 'marker_id_$_markerIdCounter';
@@ -74,8 +78,8 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
     );
   }
   _handleTap(LatLng point) {
-    addressProvider.resetAll();
-    addressProvider.changeGeo(GeoPoint(point.latitude, point.longitude));
+//    dakotaProvider.resetAll();
+//    dakotaProvider.changeGeo(String(point.latitude, point.longitude));
     setState(() {
       myMarker=[];
       myMarker.add(Marker(
@@ -87,6 +91,8 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
         icon:
         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
       ));
+      latitude = point.latitude.toString();
+      longtitude = point.longitude.toString();
       itsOkay = true;
     });
   }
