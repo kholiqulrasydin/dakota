@@ -5,7 +5,6 @@ import 'package:dakota/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-
 import 'animations/sizeconfig.dart';
 
 class AddAddressMapper extends StatefulWidget {
@@ -14,12 +13,13 @@ class AddAddressMapper extends StatefulWidget {
 }
 
 class _AddAddressMapperState extends State<AddAddressMapper> {
-  String latitude,longtitude;
+  String latitude, longtitude;
   Completer<GoogleMapController> _controller = Completer();
   MapType _currentMapType = MapType.normal;
   int _markerIdCounter = 0;
   DakotaProvider dakotaProvider;
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
+
   String _markerIdVal({bool increment = false}) {
     String val = 'marker_id_$_markerIdCounter';
     if (increment) _markerIdCounter++;
@@ -28,28 +28,43 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
 
   bool itsOkay = false;
 
-
-  _onMapCreated(GoogleMapController googleMapController){
+  _onMapCreated(GoogleMapController googleMapController) {
     _controller.complete(googleMapController);
   }
 
-  List<Marker> myMarker=[];
+  List<Marker> myMarker = [];
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(title: Text('Pilih Lokasi Anda'),),
+      appBar: AppBar(
+        title: Text(
+          'Pilih Lokasi Anda',
+          style: TextStyle(color: Colors.blueGrey),
+        ),
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.blueGrey,
+          ),
+        ),
+      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(
-            initialCameraPosition: CameraPosition(target: LatLng(-7.8757537, 111.4518134), zoom: 11.0),
+            initialCameraPosition: CameraPosition(
+                target: LatLng(-7.8757537, 111.4518134), zoom: 11.0),
             onMapCreated: _onMapCreated,
             onTap: _handleTap,
             mapType: _currentMapType,
             markers: Set.from(myMarker),
             myLocationButtonEnabled: true,
             onCameraMove: (CameraPosition position) {
-              if(myMarker.length > 0) {
+              if (myMarker.length > 0) {
                 MarkerId markerId = MarkerId(_markerIdVal());
                 Marker marker = _markers[markerId];
                 Marker updatedMarker = marker.copyWith(
@@ -62,25 +77,33 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
             },
           ),
           Container(
-            padding: EdgeInsets.only(left: SizeConfig.widthMultiplier * 20, right:  SizeConfig.widthMultiplier * 20),
+            padding: EdgeInsets.only(
+                left: SizeConfig.widthMultiplier * 20,
+                right: SizeConfig.widthMultiplier * 20),
             alignment: Alignment.bottomCenter,
             margin: EdgeInsets.only(bottom: SizeConfig.heightMultiplier * 13),
-            child: (itsOkay) ? RoundedButton(
-              text: "Simpan Lokasi",
-              press: () {
-                Navigator.of(context).pop();
-              },
-            ) : Container(child: Text(''), decoration: BoxDecoration(color: Colors.transparent),),
+            child: (itsOkay)
+                ? RoundedButton(
+                    text: "Simpan Lokasi",
+                    press: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                : Container(
+                    child: Text(''),
+                    decoration: BoxDecoration(color: Colors.transparent),
+                  ),
           ),
         ],
       ),
     );
   }
+
   _handleTap(LatLng point) {
 //    dakotaProvider.resetAll();
 //    dakotaProvider.changeGeo(String(point.latitude, point.longitude));
     setState(() {
-      myMarker=[];
+      myMarker = [];
       myMarker.add(Marker(
         markerId: MarkerId(point.toString()),
         position: point,
@@ -88,7 +111,7 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
           title: point.toString(),
         ),
         icon:
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
       ));
       latitude = point.latitude.toString();
       longtitude = point.longitude.toString();
