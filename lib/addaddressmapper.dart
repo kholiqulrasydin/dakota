@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
+
 
 import 'animations/sizeconfig.dart';
 
