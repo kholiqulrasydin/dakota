@@ -5,6 +5,8 @@ import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/animations/sizeconfig.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'addaddressmapper.dart';
 //import 'package:provider/provider.dart';
 
 class DakotaAdd extends StatefulWidget {
@@ -215,13 +217,17 @@ class _DakotaAddState extends State<DakotaAdd> {
             Padding(
               padding: EdgeInsets.only(top: 8.0),
             ),
-//            Divider(),
-//            Row(
-//              children: <Widget>[
-//                Icon(Icons.map),
-//                FlatButton(onPressed: (){}, child: Text('tentukan lokasi alamat di peta', style: TextStyle(color: Colors.blueAccent),))
-//              ],
-//            ),
+            Divider(),
+            Row(
+              children: <Widget>[
+                Icon(Icons.map),
+                FlatButton(onPressed: (){
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AddAddressMapper())
+                  );
+                }, child: Text('tentukan lokasi alamat di peta', style: TextStyle(color: Colors.blueAccent),))
+              ],
+            ),
             Divider(),
             TextField(
               controller: _jumlahanggota,
