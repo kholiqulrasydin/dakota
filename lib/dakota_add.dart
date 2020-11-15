@@ -10,6 +10,9 @@ import 'addaddressmapper.dart';
 //import 'package:provider/provider.dart';
 
 class DakotaAdd extends StatefulWidget {
+  final String latitude;
+  final String longtitude;
+  DakotaAdd({this.latitude, this.longtitude});
   @override
   _DakotaAddState createState() => _DakotaAddState();
 }
@@ -385,7 +388,7 @@ class _DakotaAddState extends State<DakotaAdd> {
             Divider(),
             FlatButton(onPressed: ()async{
               DakotaApi.createDakota(context,authProvider, _namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
-                  ,_kelurahandesacontroller.text,'-7,1343857','8,2353287',_namaketuacontroller.text,int.parse(_jumlahanggota.text),
+                  ,_kelurahandesacontroller.text,widget.latitude,widget.longtitude,_namaketuacontroller.text,int.parse(_jumlahanggota.text),
                   jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
             }, child: Text('submit'))
           ],

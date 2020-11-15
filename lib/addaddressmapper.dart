@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/dakota_add.dart';
 import 'package:dakota/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -99,10 +100,10 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
     );
   }
 
-  _handleTap(LatLng point) {
+  _handleTap(LatLng point)  {
 //    dakotaProvider.resetAll();
 //    dakotaProvider.changeGeo(String(point.latitude, point.longitude));
-    setState(() {
+    setState(() async {
       myMarker = [];
       myMarker.add(Marker(
         markerId: MarkerId(point.toString()),
@@ -113,8 +114,10 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
         icon:
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
       ));
-      latitude = point.latitude.toString();
-      longtitude = point.longitude.toString();
+     latitude= await Navigator.push(context, MaterialPageRoute(builder: (_) => DakotaAdd(latitude:point.latitude.toString() ,)));
+      longtitude= await Navigator.push(context, MaterialPageRoute(builder: (_) => DakotaAdd(longtitude:point.longitude.toString(),)));
+//      latitude = point.latitude.toString();
+//      longtitude = point.longitude.toString();
       itsOkay = true;
     });
   }
