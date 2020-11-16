@@ -1,35 +1,49 @@
-
-//import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/animations/sizeconfig.dart';
+import 'package:dakota/home.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
+
 
 import 'addaddressmapper.dart';
 //import 'package:provider/provider.dart';
 
 class DakotaAdd extends StatefulWidget {
+  final String namaKelompok;
+  final String namaKetua;
+  final String alamat;
+  final String kelurahan;
+  final String kecamatan;
+  final String jumlahAnggota;
+  final String luasLahan;
   final String latitude;
   final String longtitude;
-  DakotaAdd({this.latitude, this.longtitude});
+  final String jenisLahan;
+  final String bidangUsaha;
+  final String subBidangUsaha;
+
+  const DakotaAdd({Key key, this.namaKelompok = 'n', this.namaKetua = 'n', this.alamat = 'n', this.kelurahan = 'n', this.kecamatan = 'n', this.jumlahAnggota = 'n', this.luasLahan = 'n', this.latitude = 'n', this.longtitude = 'n', this.jenisLahan = 'n', this.bidangUsaha = 'n', this.subBidangUsaha});
   @override
   _DakotaAddState createState() => _DakotaAddState();
 }
 
 class _DakotaAddState extends State<DakotaAdd> {
-  final TextEditingController _namacontroller = TextEditingController();
-  final TextEditingController _namaketuacontroller = TextEditingController();
-  final TextEditingController alamatcontroller = TextEditingController();
-  final TextEditingController _kelurahandesacontroller = TextEditingController();
-  final TextEditingController _kecamatancontroller = TextEditingController();
-  final TextEditingController _jumlahanggota = TextEditingController();
-  final TextEditingController _luaslahancontroller = TextEditingController();
+  TextEditingController _namacontroller = TextEditingController();
+  TextEditingController _namaketuacontroller = TextEditingController();
+  TextEditingController alamatcontroller = TextEditingController();
+  TextEditingController _kelurahandesacontroller = TextEditingController();
+  TextEditingController _kecamatancontroller = TextEditingController();
+  TextEditingController _jumlahanggota = TextEditingController();
+  TextEditingController _luaslahancontroller = TextEditingController();
+  TextEditingController subBidangUsahaLainnya = TextEditingController();
 
+  String latitude = '-7.8840868', longtitude = '111.4718637', alamat = 'tentukan lokasi di peta';
   bool asTabs = false;
   String jenisLahan = 'pilih salah satu jenis lahan';
   String bidangUsaha = 'pilih salah satu bidang usaha';
-  String subBidangUsahaa = 'pilih salah satu detail usaha';
+  String subBidangUsahaa;
   bool boolLainnya = false;
   final List<DropdownMenuItem> items = [];
   final List<String> tanamanPangan = [
@@ -112,35 +126,44 @@ class _DakotaAddState extends State<DakotaAdd> {
 
   @override
   void initState() {
-    String wordPair = "";
-    loremIpsum
-        .toLowerCase()
-        .replaceAll(",", "")
-        .replaceAll(".", "")
-        .split(" ")
-        .forEach((word) {
-      if (wordPair.isEmpty) {
-        wordPair = word + " ";
-      } else {
-        wordPair += word;
-        if (items.indexWhere((item) {
-          return (item.value == wordPair);
-        }) ==
-            -1) {
-          items.add(DropdownMenuItem(
-            child: Text(wordPair),
-            value: wordPair,
-          ));
-        }
-        wordPair = "";
-      }
-    });
-
-    lainnyaInput = Text('');
     super.initState();
+    setState(() {
+      subBidangUsahaa = 'pilih salah satu detail usaha';
+    });
+      setState(() {
+        if(widget.subBidangUsaha != 'n'){
+          subBidangUsahaa = widget.subBidangUsaha;
+        }else{
+          subBidangUsahaa = 'pilih salah satu detail bidang usaha';
+        }
+        if(widget.namaKelompok != 'n') {_namacontroller = new TextEditingController(text: widget.namaKelompok);}
+        if(widget.namaKetua != 'n') { _namaketuacontroller = new TextEditingController(text: widget.namaKetua);}
+        if(widget.alamat != 'n') {alamatcontroller = new TextEditingController(text: widget.alamat);}
+        if(widget.kelurahan != 'n') {_kelurahandesacontroller = new TextEditingController(text: widget.kelurahan);}
+        if(widget.kecamatan != 'n') {_kecamatancontroller = new TextEditingController(text: widget.kecamatan);}
+        if(widget.jumlahAnggota != 'n') {_jumlahanggota = new TextEditingController(text: widget.jumlahAnggota);}
+        if(widget.luasLahan != 'n') {_luaslahancontroller = new TextEditingController(text: widget.luasLahan);}
+        if(widget.latitude != 'n'){latitude = widget.latitude;}
+        if(widget.longtitude !='n'){longtitude = widget.longtitude; }
+        if(widget.bidangUsaha != 'n'){bidangUsaha = widget.bidangUsaha;}
+        if(widget.subBidangUsaha != 'n'){subBidangUsahaa = widget.subBidangUsaha;}
+        if(widget.subBidangUsaha == 'lainnya'){
+          subBidangUsahaLainnya = new TextEditingController(text: widget.subBidangUsaha);
+        }
+      });
+    if(widget.latitude != 'n' && widget.longtitude !='n'){mapSetter();}
   }
 
-  Widget lainnyaInput;
+  mapSetter()async{
+    final coordinates = new Coordinates(double.parse(latitude), double.parse(longtitude));
+    var addresses = await Geocoder.local.findAddressesFromCoordinates(
+        coordinates);
+    var first = addresses.first;
+    setState(() {
+      alamat = first.addressLine;
+    });
+    print('alamat anda ${first.addressLine}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +175,13 @@ class _DakotaAddState extends State<DakotaAdd> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+            ),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+            }),
         title: Text('Tambah Data Kelompok Tani'),
       ),
       body: Container(
@@ -226,9 +256,9 @@ class _DakotaAddState extends State<DakotaAdd> {
                 Icon(Icons.map),
                 FlatButton(onPressed: (){
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AddAddressMapper())
+                      MaterialPageRoute(builder: (context) => AddAddressMapper(namaKelompok: _namacontroller.text, namaKetua: _namaketuacontroller.text, alamat: alamatcontroller.text, kelurahan: _kelurahandesacontroller.text, kecamatan: _kecamatancontroller.text, jumlahAnggota: _jumlahanggota.text, luasLahan: _luaslahancontroller.text, jenisLahan: jenisLahan, bidangUsaha: bidangUsaha, subBidangUsaha: subBidangUsahaa))
                   );
-                }, child: Text('tentukan lokasi alamat di peta', style: TextStyle(color: Colors.blueAccent),))
+                }, child: SafeArea(child: Text('lokasi kelompok: $alamat', overflow: TextOverflow.fade, style: TextStyle(color: Colors.blueAccent),)))
               ],
             ),
             Divider(),
@@ -378,6 +408,12 @@ class _DakotaAddState extends State<DakotaAdd> {
             Container(
               margin: EdgeInsets.only(bottom: height * 0.01),
               child: (boolLainnya) ? TextField(
+                controller: subBidangUsahaLainnya,
+                onChanged: (_val){
+                  setState(() {
+                    subBidangUsahaa = _val;
+                  });
+                },
                 keyboardType: TextInputType.text,
                 style:
                 TextStyle(fontSize: 17.0, color: Colors.blueGrey),
@@ -388,7 +424,7 @@ class _DakotaAddState extends State<DakotaAdd> {
             Divider(),
             FlatButton(onPressed: ()async{
               DakotaApi.createDakota(context,authProvider, _namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
-                  ,_kelurahandesacontroller.text,widget.latitude,widget.longtitude,_namaketuacontroller.text,int.parse(_jumlahanggota.text),
+                  ,_kelurahandesacontroller.text,latitude,longtitude,_namaketuacontroller.text,int.parse(_jumlahanggota.text),
                   jenisLahan,int.parse(_luaslahancontroller.text),bidangUsaha,subBidangUsahaa);
             }, child: Text('submit'))
           ],

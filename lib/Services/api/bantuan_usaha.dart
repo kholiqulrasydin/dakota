@@ -66,8 +66,6 @@ class BantuanUsahaApi {
           'Authorization': 'Bearer ${prefs.getString('token')}'
         });
 
-    print('${prefs.getString('token')} statusnyaa');
-
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.

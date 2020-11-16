@@ -9,6 +9,18 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'animations/sizeconfig.dart';
 
 class AddAddressMapper extends StatefulWidget {
+  final String namaKelompok;
+  final String namaKetua;
+  final String alamat;
+  final String kelurahan;
+  final String kecamatan;
+  final String jumlahAnggota;
+  final String luasLahan;
+  final String jenisLahan;
+  final String bidangUsaha;
+  final String subBidangUsaha;
+
+  const AddAddressMapper({Key key, this.namaKelompok ='n', this.namaKetua ='n', this.alamat ='n', this.kelurahan ='n', this.kecamatan ='n', this.jumlahAnggota ='n', this.luasLahan ='n', this.jenisLahan ='n', this.bidangUsaha ='n', this.subBidangUsaha});
   @override
   _AddAddressMapperState createState() => _AddAddressMapperState();
 }
@@ -87,7 +99,7 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
                 ? RoundedButton(
                     text: "Simpan Lokasi",
                     press: () {
-                      Navigator.of(context).pop();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => DakotaAdd(namaKelompok: widget.namaKelompok, namaKetua: widget.namaKetua, alamat: widget.alamat, kelurahan: widget.kelurahan, kecamatan: widget.kecamatan, jumlahAnggota: widget.jumlahAnggota, luasLahan: widget.luasLahan, latitude: latitude, longtitude: longtitude, jenisLahan: widget.jenisLahan, bidangUsaha: widget.bidangUsaha, subBidangUsaha: widget.subBidangUsaha,)));
                     },
                   )
                 : Container(
@@ -103,7 +115,7 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
   _handleTap(LatLng point)  {
 //    dakotaProvider.resetAll();
 //    dakotaProvider.changeGeo(String(point.latitude, point.longitude));
-    setState(() async {
+    setState(() {
       myMarker = [];
       myMarker.add(Marker(
         markerId: MarkerId(point.toString()),
@@ -114,10 +126,8 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
         icon:
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
       ));
-     latitude= await Navigator.push(context, MaterialPageRoute(builder: (_) => DakotaAdd(latitude:point.latitude.toString() ,)));
-      longtitude= await Navigator.push(context, MaterialPageRoute(builder: (_) => DakotaAdd(longtitude:point.longitude.toString(),)));
-//      latitude = point.latitude.toString();
-//      longtitude = point.longitude.toString();
+      latitude = point.latitude.toString();
+      longtitude = point.longitude.toString();
       itsOkay = true;
     });
   }

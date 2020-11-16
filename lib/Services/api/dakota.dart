@@ -32,7 +32,6 @@ class DakotaApi{
       String bidangUsaha,
       String subBidangUsaha) async {
     final prefs = await SharedPreferences.getInstance();
-    print(prefs.getString('token'));
     await http.post(
       'http://apidinper.reboeng.com/api/dakota',
       headers: <String, String>{
@@ -85,7 +84,6 @@ class DakotaApi{
       String bidangUsaha,
       String subBidangUsaha,
       int id) async {
-    print(authProvider.currentToken);
     await http.put(
         'http://apidinper.reboeng.com/api/dakota/$id',
         headers: <String, String>{
@@ -139,38 +137,48 @@ class DakotaApi{
   }
   static Future<void> fetchDakota(AuthProvider authProvider, DakotaProvider dakotaProvider, String category) async {
 
-    http.Response response;
-
     if(category == "all"){
-      response =
       await http.get(
           'http://apidinper.reboeng.com/api/dakota',
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${authProvider.currentToken}'
-          });
+          }).then((response) {
+        if (response.statusCode == 200) {
+          // If the server did return a 200 OK response,
+          // then parse the JSON.
+          print(response.statusCode.toString());
+          String content = response.body;
+          List dakota = jsonDecode(content);
+          return dakotaProvider.dakotaList = dakota.map((e) => DakotaModel.fromJson(e)).toList();
+        } else {
+          // If the server did not return a 200 OK response,
+          // then throw an exception.
+          print(response.statusCode.toString());
+          throw Exception('Failed to load Dakota');
+        }
+      });
     }else{
-      response =
       await http.get(
           'http://apidinper.reboeng.com/api/search_bidang/$category',
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${authProvider.currentToken}'
-          });
-    }
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.statusCode.toString());
-      String content = response.body;
-      List dakota = jsonDecode(content);
-      return dakotaProvider.dakotaList = dakota.map((e) => DakotaModel.fromJson(e)).toList();
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      print(response.statusCode.toString());
-      throw Exception('Failed to load Dakota');
+          }).then((response) {
+        if (response.statusCode == 200) {
+          // If the server did return a 200 OK response,
+          // then parse the JSON.
+          print(response.statusCode.toString());
+          String content = response.body;
+          List dakota = jsonDecode(content);
+          return dakotaProvider.dakotaList = dakota.map((e) => DakotaModel.fromJson(e)).toList();
+        } else {
+          // If the server did not return a 200 OK response,
+          // then throw an exception.
+          print(response.statusCode.toString());
+          throw Exception('Failed to load Dakota');
+        }
+      });
     }
 
 
@@ -178,60 +186,55 @@ class DakotaApi{
 
   static Future<void> getLast(DakotaProvider dakotaProvider) async {
     final prefs = await SharedPreferences.getInstance();
-
-    http.Response response =
     await http.get(
         'http://apidinper.reboeng.com/api/dakota/limit',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${prefs.getString('token')}'
-        });
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.statusCode.toString());
-      String content = response.body;
-      List dakota = jsonDecode(content);
-      return dakotaProvider.dakotaListLatest = dakota.map((e) => DakotaModel.fromJson(e)).toList();
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      print(response.statusCode.toString());
-      return print('Belum Bisa Mendapatkan Data Kelompok Tani');
-    }
+        }).then((response) {
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.statusCode.toString());
+        String content = response.body;
+        List dakota = jsonDecode(content);
+        dakotaProvider.dakotaListLatest = dakota.map((e) => DakotaModel.fromJson(e)).toList();
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        print(response.statusCode.toString());
+      }
+    });
 
   }
 
   static Future<void> getPersonalGroup(BuildContext context, DakotaProvider dakotaProvider,int id, BantuanUsaha bantuanUsaha) async {
 
     final prefs = await SharedPreferences.getInstance();
-
-    http.Response response =
-        await http.get(
+    await http.get(
         'http://apidinper.reboeng.com/api/dakota/selectPersonalGroup/$id',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${prefs.getString('token')}'
-        });
+        }).then((response) async {
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.statusCode.toString());
+        String content = response.body;
+        List dakota = jsonDecode(content);
+        dakotaProvider.dakotaListOnce = dakota.map((e) => DakotaModel.fromJson(e)).toList();
+        final _dakotaa = dakotaProvider.dakotaListOnce.first;
+        await BantuanUsahaApi.getBantuanUsahaPersonalGroup(bantuanUsaha, _dakotaa.id);
 
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.statusCode.toString());
-      String content = response.body;
-      List dakota = jsonDecode(content);
-      dakotaProvider.dakotaListOnce = dakota.map((e) => DakotaModel.fromJson(e)).toList();
-      final _dakotaa = dakotaProvider.dakotaListOnce.first;
-      await BantuanUsahaApi.getBantuanUsahaPersonalGroup(bantuanUsaha, _dakotaa.id);
-
-      return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DakotaView(_dakotaa.id, dakotaProvider.dakotaListOnce, bantuanUsaha.bantuanUsahaList)));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      print(response.statusCode.toString());
-      throw Exception('Failed to load Dakota');
-    }
+        return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DakotaView(_dakotaa.id, dakotaProvider.dakotaListOnce, bantuanUsaha.bantuanUsahaList)));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        print(response.statusCode.toString());
+        throw Exception('Failed to load Dakota');
+      }
+    });
   }
 
   static Future<void> searchDakota(String search, DakotaProvider dakotaProvider) async {
