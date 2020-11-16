@@ -199,9 +199,11 @@ class DakotaApi{
         String content = response.body;
         List dakota = jsonDecode(content);
         dakotaProvider.dakotaListLatest = dakota.map((e) => DakotaModel.fromJson(e)).toList();
+        print('success mendapatkan data kelompok tani terbaru');
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
+        print('gagal mendapatkan data kelompok tani terbaru');
         print(response.statusCode.toString());
       }
     });

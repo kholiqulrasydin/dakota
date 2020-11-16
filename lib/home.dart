@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   void setData(DakotaProvider dakotaProvider, BantuanUsaha bantuanUsaha) async {
     setState(() {
-      dData = dakotaProvider.dakotaList;
+      dData = dakotaProvider.dakotaListLatest;
     });
     bantuanUsaha.jData = keyCategory;
   }
