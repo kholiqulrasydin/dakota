@@ -11,6 +11,13 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   List<UserModel> userData = [];
+  String name;
+  String email;
+  String password;
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
 
   bool showPassword = false;
 
@@ -24,7 +31,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       userData = userProvider.personalUser;
     });
+    controllerSet();
   }
+
+  void controllerSet(){
+    setState(() {
+      _nameController = new TextEditingController(text: userData.first.name);
+      _emailController = new TextEditingController(text: userData.first.email);
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,24 +119,87 @@ class _EditProfilePageState extends State<EditProfilePage> {
               SizedBox(
                 height: 35,
               ),
-              buildTextField("Nama Lengkap", userData.first.name, false),
-              buildTextField("E-mail", userData.first.email, false),
-              buildTextField("Ubah Password", "", true),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 35.0),
+                child: TextField(
+                  controller: _nameController,
+                  onChanged: (_val){
+                    setState(() {
+                      name = _val;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(bottom: 3),
+                    labelText: 'Nama Lengkap',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 35.0),
+                child: TextField(
+                  controller: _emailController,
+                  onChanged: (_val){
+                    setState(() {
+                      email = _val;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(bottom: 3),
+                      labelText: 'E-mail',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 35.0),
+                child: TextField(
+                  controller: _passwordController,
+                  onChanged: (_val){
+                    setState(() {
+                      password = _val;
+                    });
+                  },
+                  obscureText: showPassword,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            showPassword = !showPassword;
+                            _passwordController = new TextEditingController(text: password);
+                          });
+                        },
+                        icon: Icon(
+                          Icons.remove_red_eye,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.only(bottom: 3),
+                      labelText: 'Ubah Password',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                ),
+              ),
+//              buildTextField("E-mail", userData.first.email, false),
+//              buildTextField("Ubah Password", "", true),
               SizedBox(
                 height: 35,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   RaisedButton(
-                    onPressed: () {},
+                    onPressed: () {
+
+                    },
                     color: Colors.blueAccent.shade400,
                     padding: EdgeInsets.symmetric(horizontal: 50),
                     elevation: 2,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     child: Text(
-                      "SAVE",
+                      "PERBARUI",
                       style: TextStyle(
                           fontSize: 14,
                           letterSpacing: 2.2,
@@ -146,6 +225,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
         controller: _controller,
+        onChanged: (_val){
+          setState(() {
+
+          });
+        },
         obscureText: isPasswordTextField ? showPassword : false,
         decoration: InputDecoration(
             suffixIcon: isPasswordTextField
