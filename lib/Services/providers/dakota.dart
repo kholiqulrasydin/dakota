@@ -11,14 +11,6 @@ class DakotaProvider with ChangeNotifier{
   List<DakotaModel> _dakotaListOnce = [];
   DakotaProvider _currentDakota;
 
-  String _geolatitude;
-  String _geolongtitude;
-
-
-  String get geolatitude => _geolatitude;
-  String get geolongtitude => _geolongtitude;
-
-
   UnmodifiableListView<DakotaModel> get dakotaList => UnmodifiableListView(_dakotaList);
   UnmodifiableListView<DakotaModel> get dakotaListLatest => UnmodifiableListView(_dakotaListLatest);
   UnmodifiableListView<DakotaModel> get dakotaListOnce => UnmodifiableListView(_dakotaListOnce);
@@ -41,10 +33,6 @@ class DakotaProvider with ChangeNotifier{
 
   set currentDakota(DakotaProvider dakotaProvider){
     _currentDakota = dakotaProvider;
-    notifyListeners();
-  }
-  changeGeo(String point){
-    _geolatitude = point;
     notifyListeners();
   }
   static Future<void> getCategory(BuildContext context, AuthProvider authProvider, DakotaProvider dakotaProvider, String category) async {

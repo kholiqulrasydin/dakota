@@ -2,6 +2,7 @@ import 'package:dakota/Services/auth.dart';
 import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/Services/providers/user.dart';
 import 'package:dakota/animations/fade_in.dart';
 import 'package:dakota/forgot_password.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context);
     BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       key: _loginPageKey,
       body: ListView(
@@ -180,8 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   onTap: () async {
                     print('Login Start');
-//                    auth(_emailController.text, _passwordController.text);
-                    await AuthServices.signIn(context, _loginPageKey, authProvider,_emailController.text, _passwordController.text, bantuanUsaha, dakotaProvider);
+                    await AuthServices.signIn(context, _loginPageKey, authProvider,_emailController.text, _passwordController.text, bantuanUsaha, dakotaProvider, userProvider);
                   },
                 ),
                 ),

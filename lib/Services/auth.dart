@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:dakota/Services/api/bantuan_usaha.dart';
 import 'package:dakota/Services/api/dakota.dart';
+import 'package:dakota/Services/api/user.dart';
 import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/Services/providers/user.dart';
 import 'package:dakota/login_page.dart';
 import 'package:dakota/wrapper.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +22,8 @@ class AuthServices {
       String email,
       String password,
       BantuanUsaha bantuanUsaha,
-      DakotaProvider dakotaProvider) async {
+      DakotaProvider dakotaProvider,
+      UserProvider userProvider) async {
     final prefs = await SharedPreferences.getInstance();
 
     print('Logging in API');
@@ -41,6 +44,8 @@ class AuthServices {
       authProvider.token = userToken['token'];
 
       prefs.setString('token', userToken['token']);
+
+      await UserApi.userFetch(userProvider);
 
       return await initialLogged(context, bantuanUsaha, dakotaProvider).then(
           (value) => Navigator.of(context)

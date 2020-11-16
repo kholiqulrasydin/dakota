@@ -195,7 +195,6 @@ class DakotaApi{
       if (response.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
-        print(response.statusCode.toString());
         String content = response.body;
         List dakota = jsonDecode(content);
         dakotaProvider.dakotaListLatest = dakota.map((e) => DakotaModel.fromJson(e)).toList();

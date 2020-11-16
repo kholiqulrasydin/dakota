@@ -1,20 +1,18 @@
 import 'package:dakota/Dashboard/pie_chart.dart';
-import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/animations/sizeconfig.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class PieChartView extends StatelessWidget {
   const PieChartView({
-    Key key,
+    Key key, @required this.jData
   }) : super(key: key);
+
+  final List<Category> jData;
 
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BantuanUsaha>(
-      builder: (_, bantuanUsaha, __) {
-        return Expanded(
+    return Expanded(
           flex: 4,
           child: LayoutBuilder(
             builder: (context, constraint) => Container(
@@ -45,7 +43,7 @@ class PieChartView extends StatelessWidget {
                         child: Center(),
                         foregroundPainter: PieChart(
                           width: constraint.maxWidth * 0.5,
-                          categories: bantuanUsaha.jData,
+                          categories: jData,
                         ),
                       ),
                     ),
@@ -79,8 +77,6 @@ class PieChartView extends StatelessWidget {
               ),
             ),
           ),
-        );
-      },
     );
   }
 }

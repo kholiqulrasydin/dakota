@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dakota/Dashboard/pie_chart.dart';
 import 'package:dakota/Services/api/bantuan_usaha.dart';
 import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/auth.dart';
@@ -10,13 +11,14 @@ import 'package:dakota/animations/loader.dart';
 import 'package:dakota/animations/sizeconfig.dart';
 import 'package:dakota/dakota_add.dart';
 import 'package:dakota/dakota_viewAll.dart';
+import 'package:dakota/edit_profile_page.dart';
 import 'package:dakota/model/DakotaModel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'Dashboard/categories_row.dart';
-import 'Dashboard/pie_chart.dart';
 import 'Dashboard/pie_chart_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,43 +37,51 @@ class _HomePageState extends State<HomePage> {
     await BantuanUsahaApi.getCountData(bantuanUsaha);
   }
 
-  void setData(DakotaProvider dakotaProvider, BantuanUsaha bantuanUsaha) async {
+  void setData(DakotaProvider dakotaProvider) async {
+
     setState(() {
       dData = dakotaProvider.dakotaListLatest;
+//      keyCategory = bantuanUsaha.jData;
     });
-    bantuanUsaha.jData = keyCategory;
+
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _onRefresh();
+//    BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context, listen: false);
+//    DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context, listen: false);
+//    refreshLatest(bantuanUsaha, dakotaProvider);
+//    setData(dakotaProvider, bantuanUsaha);
+  _onRefresh();
   }
-  Future<void> _onRefresh() async {
+  void refreshNow() async {
     BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context, listen: false);
     DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context, listen: false);
 
-    refreshLatest(bantuanUsaha, dakotaProvider);
-    return setData(dakotaProvider, bantuanUsaha);
+    bantuanUsaha.jData = keyCategory;
 
-    }
+    refreshLatest(bantuanUsaha, dakotaProvider);
+    setData(dakotaProvider);
+  }
+
+
+  Future<void> _onRefresh() async {
+    return refreshNow();
+  }
 
   @override
   Widget build(BuildContext context) {
-//    double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-
-//    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context);
-    BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context);
-
-    refreshLatest(bantuanUsaha, dakotaProvider);
+//    BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context);
+//    setData(dakotaProvider, bantuanUsaha);
 
     return Consumer<BantuanUsaha>(
       builder: (_, bantuanUsaha, __){
         return Loader(
-          inAsyncCall: bantuanUsaha.jData.isEmpty,
+          inAsyncCall: dakotaProvider.dakotaListLatest.isEmpty,
           child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
@@ -84,6 +94,7 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         children: <Widget>[
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Container(
                                 margin:
@@ -91,26 +102,26 @@ class _HomePageState extends State<HomePage> {
                                 alignment: Alignment.topLeft,
                                 child: Row(
                                   children: <Widget>[
-//                              Text(
-//                                'Profil ',
-//                                style: TextStyle(color: Colors.blueGrey),
-//                                textAlign: TextAlign.right,
-//                              ),
-//                              IconButton(
-//                                  icon: Icon(Icons.person),
-//                                  onPressed: () async {
-////                              await BantuanUsahaApi.getCountData(authProvider, bantuanUsaha);
-//                                    Navigator.of(context).push(MaterialPageRoute(
-//                                        builder: (context) => EditProfilePage()));
-//                                  }),
+                              Text(
+                                'Profil ',
+                                style: TextStyle(color: Colors.blueGrey),
+                                textAlign: TextAlign.right,
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.person),
+                                  onPressed: () async {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) => EditProfilePage()));
+                                  }),
                                   ],
                                 ),
                               ),
                               Container(
                                 margin: EdgeInsets.only(
                                     top: SizeConfig.heightMultiplier * 4,
-                                    left: SizeConfig.widthMultiplier * 47,
-                                    right: SizeConfig.widthMultiplier * 2),
+//                                    left: SizeConfig.widthMultiplier * 47,
+//                                    right: SizeConfig.widthMultiplier * 2
+                                    ),
                                 alignment: Alignment.topRight,
                                 child: Row(
                                   children: <Widget>[
@@ -220,20 +231,16 @@ class _HomePageState extends State<HomePage> {
                                     fontWeight: FontWeight.w400, fontSize: 18),
                               ),
                             ),
-                            Consumer<BantuanUsaha>(
-                              builder: (_, bantuanUsaha, __) {
-                                return Container(
+                                Container(
                                   width: SizeConfig.widthMultiplier * 90,
                                   height: SizeConfig.heightMultiplier * 40,
                                   child:  Row(
                                     children: <Widget>[
                                       CategoriesRow(),
-                                      PieChartView(),
+                                      PieChartView(jData: bantuanUsaha.jData),
                                     ],
                                   ),
-                                );
-                              },
-                            ),
+                                ),
                             Container(
                               alignment: Alignment.topLeft,
                               margin: EdgeInsets.only(left: SizeConfig.widthMultiplier * 8),
@@ -243,12 +250,12 @@ class _HomePageState extends State<HomePage> {
                                     fontWeight: FontWeight.w400, fontSize: 18),
                               ),
                             ),
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: width,
-                              alignment: Alignment.topCenter,
-                              height: SizeConfig.heightMultiplier * 27,
-                              child: LastAdded(dData),
+                             AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  width: width,
+                                  alignment: Alignment.topCenter,
+                                  height: SizeConfig.heightMultiplier * 27,
+                                  child: LastAdded(dakotaProvider.dakotaListLatest),
                             ),
                           ],
                         ),

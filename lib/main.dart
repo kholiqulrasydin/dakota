@@ -1,6 +1,7 @@
 import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/Services/providers/user.dart';
 import 'package:dakota/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +19,7 @@ class StartDakota extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => DakotaProvider()),
         ChangeNotifierProvider(create: (context) => BantuanUsaha()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

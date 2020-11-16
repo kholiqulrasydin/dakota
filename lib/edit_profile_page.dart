@@ -1,5 +1,8 @@
+import 'package:dakota/Services/api/user.dart';
+import 'package:dakota/Services/providers/user.dart';
+import 'package:dakota/model/user.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -7,7 +10,22 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  List<UserModel> userData = [];
+
   bool showPassword = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    UserApi.userFetch(userProvider);
+    setState(() {
+      userData = userProvider.personalUser;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.green,
+            color: Colors.blueAccent.shade400,
           ),
           onPressed: () {
             Navigator.of(context).pop();
@@ -27,7 +45,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           IconButton(
             icon: Icon(
               Icons.settings,
-              color: Colors.green,
+              color: Colors.blueAccent.shade400,
             ),
             onPressed: () {
 //              Navigator.of(context).push(MaterialPageRoute(
@@ -43,9 +61,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
             FocusScope.of(context).unfocus();
           },
           child: ListView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             children: [
               Text(
-                "Edit Profile",
+                "Howdy, ${userData.first.name}!",
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
               ),
               SizedBox(
@@ -58,72 +78,43 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       width: 130,
                       height: 130,
                       decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 4,
-                              color: Theme.of(context).scaffoldBackgroundColor),
-                          boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 2,
-                                blurRadius: 10,
-                                color: Colors.black.withOpacity(0.1),
-                                offset: Offset(0, 10))
-                          ],
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                "https://images.pexels.com/photos/3307758/pexels-photo-3307758.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250",
-                              ))),
-                    ),
-                    Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              width: 4,
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                            color: Colors.green,
-                          ),
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        )),
+                        border: Border.all(
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                        boxShadow: [
+                          BoxShadow(
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              color: Colors.black.withOpacity(0.1),
+                              offset: Offset(0, 10))
+                        ],
+                        shape: BoxShape.circle,
+                      ),
+                      child: Image(image: (userData.first.privileges == 0)
+                          ? NetworkImage(
+                        "http://apidinper.reboeng.com/image/user.png",
+                      )
+                          : NetworkImage(
+                          "http://apidinper.reboeng.com/image/crown.png")),
+                    )
                   ],
                 ),
               ),
               SizedBox(
                 height: 35,
               ),
-              buildTextField("Full Name", "Dor Alex", false),
-              buildTextField("E-mail", "alexd@gmail.com", false),
-              buildTextField("Password", "********", true),
-              buildTextField("Location", "TLV, Israel", false),
+              buildTextField("Nama Lengkap", userData.first.name, false),
+              buildTextField("E-mail", userData.first.email, false),
+              buildTextField("Ubah Password", "", true),
               SizedBox(
                 height: 35,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  OutlineButton(
-                    padding: EdgeInsets.symmetric(horizontal: 50),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    onPressed: () {},
-                    child: Text("CANCEL",
-                        style: TextStyle(
-                            fontSize: 14,
-                            letterSpacing: 2.2,
-                            color: Colors.black)),
-                  ),
                   RaisedButton(
                     onPressed: () {},
-                    color: Colors.green,
+                    color: Colors.blueAccent.shade400,
                     padding: EdgeInsets.symmetric(horizontal: 50),
                     elevation: 2,
                     shape: RoundedRectangleBorder(
@@ -147,23 +138,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Widget buildTextField(
       String labelText, String placeholder, bool isPasswordTextField) {
+    TextEditingController _controller = TextEditingController();
+    if(!isPasswordTextField){
+      _controller = new TextEditingController(text: placeholder.toString());
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
+        controller: _controller,
         obscureText: isPasswordTextField ? showPassword : false,
         decoration: InputDecoration(
             suffixIcon: isPasswordTextField
                 ? IconButton(
-              onPressed: () {
-                setState(() {
-                  showPassword = !showPassword;
-                });
-              },
-              icon: Icon(
-                Icons.remove_red_eye,
-                color: Colors.grey,
-              ),
-            )
+                    onPressed: () {
+                      setState(() {
+                        showPassword = !showPassword;
+                        _controller = new TextEditingController(text: placeholder.toString());
+                      });
+                    },
+                    icon: Icon(
+                      Icons.remove_red_eye,
+                      color: Colors.grey,
+                    ),
+                  )
                 : null,
             contentPadding: EdgeInsets.only(bottom: 3),
             labelText: labelText,
