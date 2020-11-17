@@ -95,31 +95,65 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      FadeIn(1.4, TextField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          hintText: 'Username or Email Address',
-                          contentPadding:
-                          const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                        ),
-                      ),
+                      FadeIn(1.4,
+                          TextFormField(
+                            controller: _emailController,
+                            decoration: new InputDecoration(
+                              labelText: "Email",
+                              fillColor: Colors.white,
+                              border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(25.0),
+                                borderSide: new BorderSide(
+                                ),
+                              ),
+                              //fillColor: Colors.green
+                            ),
+                            validator: (val) {
+                              if(val.length==0) {
+                                return "Email cannot be empty";
+                              }else{
+                                return null;
+                              }
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                            style: new TextStyle(
+                              fontFamily: "Poppins",
+                            ),
+                          ),
                       ),
                       SizedBox(
                         height: 10.0,
                       ),
-                      FadeIn(1.6, TextField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.remove_red_eye),
-                            onPressed: _viewPassword,
+                      FadeIn(1.4,
+                        TextFormField(
+                          controller: _passwordController,
+                          decoration: new InputDecoration(
+                            labelText: "Password",
+                            fillColor: Colors.white,
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.remove_red_eye),
+                              onPressed: _viewPassword,
+                            ),
+                            border: new OutlineInputBorder(
+                              borderRadius: new BorderRadius.circular(25.0),
+                              borderSide: new BorderSide(
+                              ),
+                            ),
+                            //fillColor: Colors.green
                           ),
-                          contentPadding:
-                          const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                          validator: (val) {
+                            if(val.length==0) {
+                              return "Password Tidak Boleh Kosong";
+                            }else{
+                              return null;
+                            }
+                          },
+                          keyboardType: TextInputType.emailAddress,
+                          style: new TextStyle(
+                            fontFamily: "Poppins",
+                          ),
+                          obscureText: _obscureText,
                         ),
-                        obscureText: _obscureText,
-                      ),
                       ),
                       SizedBox(
                         height: 10.0,
