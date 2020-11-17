@@ -88,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.2,
                 ),
