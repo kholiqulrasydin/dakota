@@ -188,8 +188,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                 ),
               ),
-//              buildTextField("E-mail", userData.first.email, false),
-//              buildTextField("Ubah Password", "", true),
               SizedBox(
                 height: 35,
               ),

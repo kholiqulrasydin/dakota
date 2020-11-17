@@ -13,6 +13,7 @@ import 'package:dakota/dakota_add.dart';
 import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/edit_profile_page.dart';
 import 'package:dakota/model/DakotaModel.dart';
+import 'package:dakota/users_statistic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,16 +33,10 @@ class _HomePageState extends State<HomePage> {
   List<DakotaModel> dData = [];
   List<Category> keyCategory =[];
 
-  void refreshLatest(BantuanUsaha bantuanUsaha, DakotaProvider dakotaProvider) async {
-    await DakotaApi.getLast(dakotaProvider);
-    await BantuanUsahaApi.getCountData(bantuanUsaha);
-  }
-
   void setData(DakotaProvider dakotaProvider) async {
 
     setState(() {
       dData = dakotaProvider.dakotaListLatest;
-//      keyCategory = bantuanUsaha.jData;
     });
 
   }
@@ -54,15 +49,15 @@ class _HomePageState extends State<HomePage> {
 //    DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context, listen: false);
 //    refreshLatest(bantuanUsaha, dakotaProvider);
 //    setData(dakotaProvider, bantuanUsaha);
-  _onRefresh();
+  refreshNow();
   }
   void refreshNow() async {
     BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context, listen: false);
     DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context, listen: false);
 
     bantuanUsaha.jData = keyCategory;
-
-    refreshLatest(bantuanUsaha, dakotaProvider);
+    await DakotaApi.getLast(dakotaProvider);
+    await BantuanUsahaApi.getCountData(bantuanUsaha);
     setData(dakotaProvider);
   }
 
@@ -81,7 +76,7 @@ class _HomePageState extends State<HomePage> {
     return Consumer<BantuanUsaha>(
       builder: (_, bantuanUsaha, __){
         return Loader(
-          inAsyncCall: dakotaProvider.dakotaListLatest.isEmpty,
+          inAsyncCall: bantuanUsaha.jData.isEmpty,
           child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
@@ -184,6 +179,29 @@ class _HomePageState extends State<HomePage> {
                                 children: <Widget>[
                                   Text(
                                     'Lihat Semua Data Kelompok Tani',
+                                    style: TextStyle(color: Colors.blueGrey),
+                                  ),
+                                  Divider(
+                                    color: Colors.blueGrey,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => UserStatistic()),
+                              );
+                            },
+                            child: Container(
+                              width: SizeConfig.widthMultiplier * 70,
+                              margin: EdgeInsets.only(bottom: SizeConfig.heightMultiplier * 3),
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    'Statistik Anda',
                                     style: TextStyle(color: Colors.blueGrey),
                                   ),
                                   Divider(
