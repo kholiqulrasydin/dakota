@@ -10,10 +10,11 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  final GlobalKey<ScaffoldState> _profileKey = new GlobalKey<ScaffoldState>();
   List<UserModel> userData = [];
   String name;
   String email;
-  String password;
+  String password ='n';
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -25,8 +26,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    onRefresh();
+  }
+
+  void onRefresh(){
     UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    Provider.of<UserProvider>(context, listen: false);
     UserApi.userFetch(userProvider);
     setState(() {
       userData = userProvider.personalUser;
@@ -36,6 +41,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void controllerSet(){
     setState(() {
+      name = userData.first.name;
+      email = userData.first.email;
       _nameController = new TextEditingController(text: userData.first.name);
       _emailController = new TextEditingController(text: userData.first.email);
     });
@@ -45,6 +52,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _profileKey,
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1,
@@ -190,8 +198,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   RaisedButton(
-                    onPressed: () {
-
+                    onPressed: () async {
+                      UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+                      password == 'n' ?
+                      await UserApi.userUpdateNoPassword(userProvider, name, email, userData.first.privileges)
+                      : await UserApi.userUpdatewWithPassword(userProvider, name, email, password, userData.first.privileges);
+                      _profileKey.currentState.showSnackBar(SnackBar(content: Text('Data berhasil diperbarui!', style: TextStyle(color: Colors.white),), backgroundColor: Colors.blueAccent.shade400, duration: Duration(seconds: 5),));
+                      onRefresh();
                     },
                     color: Colors.blueAccent.shade400,
                     padding: EdgeInsets.symmetric(horizontal: 50),

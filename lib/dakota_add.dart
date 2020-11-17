@@ -254,11 +254,13 @@ class _DakotaAddState extends State<DakotaAdd> {
             Row(
               children: <Widget>[
                 Icon(Icons.map),
-                FlatButton(onPressed: (){
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AddAddressMapper(namaKelompok: _namacontroller.text, namaKetua: _namaketuacontroller.text, alamat: alamatcontroller.text, kelurahan: _kelurahandesacontroller.text, kecamatan: _kecamatancontroller.text, jumlahAnggota: _jumlahanggota.text, luasLahan: _luaslahancontroller.text, jenisLahan: jenisLahan, bidangUsaha: bidangUsaha, subBidangUsaha: subBidangUsahaa))
-                  );
-                }, child: SafeArea(child: Text('lokasi kelompok: $alamat', overflow: TextOverflow.fade, style: TextStyle(color: Colors.blueAccent),)))
+                Flexible(
+                  child: FlatButton(onPressed: (){
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => AddAddressMapper(namaKelompok: _namacontroller.text, namaKetua: _namaketuacontroller.text, alamat: alamatcontroller.text, kelurahan: _kelurahandesacontroller.text, kecamatan: _kecamatancontroller.text, jumlahAnggota: _jumlahanggota.text, luasLahan: _luaslahancontroller.text, jenisLahan: jenisLahan, bidangUsaha: bidangUsaha, subBidangUsaha: subBidangUsahaa))
+                    );
+                  }, child: Flexible(child: Text('lokasi kelompok: $alamat', overflow: TextOverflow.fade, style: TextStyle(color: Colors.blueAccent),))),
+                )
               ],
             ),
             Divider(),
@@ -380,26 +382,28 @@ class _DakotaAddState extends State<DakotaAdd> {
             Row(
               children: <Widget>[
                 Icon(Icons.zoom_in),
-                Container(
-                  margin: EdgeInsets.only(left: SizeConfig.widthMultiplier * 4.5),
-                  child: DropdownButton<String>(
-                    hint: Text('$subBidangUsahaa'),
-                    items: subBidangUsaha.map((String value) {
-                      return new DropdownMenuItem<String>(
-                        value: value,
-                        child: new Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (_val) {
-                      setState(() {
-                        subBidangUsahaa = _val;
-                      });
-                      if(_val == 'lainnya'){
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.only(left: SizeConfig.widthMultiplier * 4.5),
+                    child: DropdownButton<String>(
+                      hint: Text('detail bidang usaha : $subBidangUsahaa', overflow: TextOverflow.ellipsis,),
+                      items: subBidangUsaha.map((String value) {
+                        return new DropdownMenuItem<String>(
+                          value: value,
+                          child: new Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (_val) {
                         setState(() {
-                          boolLainnya = true;
+                          subBidangUsahaa = _val;
                         });
-                      }
-                    },
+                        if(_val == 'lainnya'){
+                          setState(() {
+                            boolLainnya = true;
+                          });
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],

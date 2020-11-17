@@ -2,6 +2,7 @@ import 'package:dakota/Services/api/bantuan_usaha.dart';
 import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
+import 'package:dakota/Services/providers/user.dart';
 import 'package:dakota/bantuan_create.dart';
 import 'package:dakota/dakota_edit.dart';
 import 'package:dakota/dakota_viewAll.dart';
@@ -25,8 +26,10 @@ class DakotaView extends StatefulWidget {
 class _DakotaViewState extends State<DakotaView> {
   final GlobalKey<ScaffoldState> _viewKey = new GlobalKey<ScaffoldState>();
 
+
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -46,7 +49,7 @@ class _DakotaViewState extends State<DakotaView> {
           style: TextStyle(color: Colors.blueGrey),
         ),
         actions: <Widget>[
-          DakotaDelete(widget: widget, viewKey: _viewKey,),
+          (userProvider.personalUser.first.privileges == 1) ? DakotaDelete(widget: widget, viewKey: _viewKey,) : Text(''),
         ],
       ),
       body: Container(
@@ -81,7 +84,7 @@ class _DakotaViewState extends State<DakotaView> {
                     ),
                   ],
                 ),
-                IconButton(
+                (userProvider.personalUser.first.privileges == 1) ? IconButton(
                   icon: Icon(
                     Icons.edit,
                     color: Colors.blueAccent,
@@ -93,7 +96,7 @@ class _DakotaViewState extends State<DakotaView> {
                             builder: (context) =>
                                 DakotaEditingForm(widget._dakota)));
                   },
-                )
+                ) : Text(''),
               ],
             ),
             Divider(
@@ -169,7 +172,7 @@ class _DakotaViewState extends State<DakotaView> {
                     itemBuilder: (context, index) {
                       final _data = widget._bantuanUsaha[index];
                       return buildDonation(context, "Bantuan ${_data.nama}",
-                          _data.id, widget._bantuanUsaha.first);
+                          _data.id, widget._bantuanUsaha.first, userProvider);
                     })),
             SizedBox(
               height: 50,
@@ -202,7 +205,7 @@ class _DakotaViewState extends State<DakotaView> {
   }
 
   GestureDetector buildDonation(
-      BuildContext context, String title, int id, BantuanUsahaModel bantuan) {
+      BuildContext context, String title, int id, BantuanUsahaModel bantuan, UserProvider userProvider) {
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -224,7 +227,7 @@ class _DakotaViewState extends State<DakotaView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("Detail : "),
-                        Text(bantuan.detail),
+                        Flexible(child: Text(bantuan.detail, overflow: TextOverflow.clip, textAlign: TextAlign.end,)),
                       ],
                     ),
                     Row(
@@ -258,7 +261,7 @@ class _DakotaViewState extends State<DakotaView> {
                   ],
                 ),
                 actions: [
-                  InkWell(
+                  (userProvider.personalUser.first.privileges == 1) ? InkWell(
                     onTap: () async {
                       BantuanUsaha bantuanUsaha =
                           Provider.of<BantuanUsaha>(context, listen: false);
@@ -279,7 +282,7 @@ class _DakotaViewState extends State<DakotaView> {
                         ),
                       ],
                     ),
-                  ),
+                  ) : Text(''),
                   FlatButton(
                       onPressed: () {
                         Navigator.of(context).pop();

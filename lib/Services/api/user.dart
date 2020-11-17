@@ -71,7 +71,28 @@ class UserApi{
     });
   }
 
-  static Future<void> userUpdate(UserProvider userProvider, String name, String email, String password, int privileges)async{
+  static Future<void> userUpdateNoPassword(UserProvider userProvider, String name, String email, int privileges)async{
+    final prefs = await SharedPreferences.getInstance();
+    await http.put(
+        'http://apidinper.reboeng.com/api/account/update',
+        headers: <String, String>{
+          'Accept': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${prefs.getString('token')}'
+        },
+        body: {
+          'name' : name,
+          'email' : email,
+          'privileges' : privileges.toString()
+        }).then((response){
+      if(response.statusCode == 200){
+        print('oke! ${response.statusCode.toString()}');
+      }else{
+        print('gagal memperbarui user!');
+      }
+    });
+  }
+
+  static Future<void> userUpdatewWithPassword(UserProvider userProvider, String name, String email, String password, int privileges)async{
     final prefs = await SharedPreferences.getInstance();
     await http.put(
         'http://apidinper.reboeng.com/api/account/update',
@@ -83,7 +104,7 @@ class UserApi{
           'name' : name,
           'email' : email,
           'password' : password,
-          'privileges' : privileges
+          'privileges' : privileges.toString()
         }).then((response){
       if(response.statusCode == 200){
         print('oke! ${response.statusCode.toString()}');

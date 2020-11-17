@@ -72,6 +72,11 @@ class _LoginPageState extends State<LoginPage> {
                     fontFamily: 'Alatsi',
                   ),
                 ),
+                Container(
+                  width: 100,
+                  height: 100,
+                  child: Image.asset('assets/logo.png'),
+                ),
               ],
             ),
             ),
