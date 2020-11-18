@@ -1,5 +1,6 @@
 import 'package:dakota/Services/api/user.dart';
 import 'package:dakota/Services/providers/user.dart';
+import 'package:dakota/animations/sizeconfig.dart';
 import 'package:dakota/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +16,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String name;
   String email;
   String password ='n';
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+//  TextEditingController _nameController = TextEditingController();
+//  TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
 
@@ -43,8 +44,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       name = userData.first.name;
       email = userData.first.email;
-      _nameController = new TextEditingController(text: userData.first.name);
-      _emailController = new TextEditingController(text: userData.first.email);
+//      _nameController = new TextEditingController(text: userData.first.name);
+//      _emailController = new TextEditingController(text: userData.first.email);
     });
   }
 
@@ -128,36 +129,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 height: 35,
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 35.0),
-                child: TextField(
-                  controller: _nameController,
-                  onChanged: (_val){
-                    setState(() {
-                      name = _val;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(bottom: 3),
-                    labelText: 'Nama Lengkap',
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                ),
+                  padding: const EdgeInsets.only(bottom: 35.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Nama Lengkap : '),
+                      Text(userData.first.name, style: TextStyle(fontSize: SizeConfig.textMultiplier * 2.5),)
+                    ],
+                  )
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 35.0),
-                child: TextField(
-                  controller: _emailController,
-                  onChanged: (_val){
-                    setState(() {
-                      email = _val;
-                    });
-                  },
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 3),
-                      labelText: 'E-mail',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      ),
-                ),
+                  padding: const EdgeInsets.only(bottom: 35.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('E-mail : '),
+                      Text(userData.first.email, style: TextStyle(fontSize: SizeConfig.textMultiplier * 2.5),)
+                    ],
+                  )
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(bottom: 35.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Hak Akses : '),
+                      Text(userData.first.privileges == 1 ? 'Administrator' : 'User' , style: TextStyle(fontSize: SizeConfig.textMultiplier * 2.5),)
+                    ],
+                  )
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 35.0),
@@ -198,9 +197,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   RaisedButton(
                     onPressed: () async {
                       UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
-                      password == 'n' ?
-                      await UserApi.userUpdateNoPassword(userProvider, name, email, userData.first.privileges)
-                      : await UserApi.userUpdatewWithPassword(userProvider, name, email, password, userData.first.privileges);
+                      await UserApi.userUpdatewWithPassword(userProvider, userData.first.id.toString(), userData.first.name, userData.first.email, _passwordController.text, userData.first.privileges);
                       _profileKey.currentState.showSnackBar(SnackBar(content: Text('Data berhasil diperbarui!', style: TextStyle(color: Colors.white),), backgroundColor: Colors.blueAccent.shade400, duration: Duration(seconds: 5),));
                       onRefresh();
                     },

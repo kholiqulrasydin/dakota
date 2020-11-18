@@ -92,15 +92,16 @@ class UserApi{
     });
   }
 
-  static Future<void> userUpdatewWithPassword(UserProvider userProvider, String name, String email, String password, int privileges)async{
+  static Future<void> userUpdatewWithPassword(UserProvider userProvider, String id, String name, String email, String password, int privileges)async{
     final prefs = await SharedPreferences.getInstance();
-    await http.put(
+    await http.post(
         'http://apidinper.reboeng.com/api/account/update',
         headers: <String, String>{
           'Accept': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${prefs.getString('token')}'
         },
         body: {
+          'id' : id,
           'name' : name,
           'email' : email,
           'password' : password,
@@ -109,7 +110,7 @@ class UserApi{
       if(response.statusCode == 200){
         print('oke! ${response.statusCode.toString()}');
       }else{
-        print('gagal memperbarui user!');
+        print('gagal memperbarui user! ${response.statusCode.toString()}');
       }
     });
   }

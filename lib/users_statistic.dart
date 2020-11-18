@@ -140,6 +140,7 @@ class _UserStatisticState extends State<UserStatistic> {
   }
 }
 
+// ignore: must_be_immutable
 class LastAdded extends StatelessWidget {
   final List<DakotaModel> dData;
   LastAdded(this.dData);
