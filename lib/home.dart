@@ -70,8 +70,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context);
-//    BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context);
-//    setData(dakotaProvider, bantuanUsaha);
 
     return Consumer<BantuanUsaha>(
       builder: (_, bantuanUsaha, __){

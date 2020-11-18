@@ -102,13 +102,13 @@ class _DarkotaViewAllState extends State<DarkotaViewAll> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'mohon maaf saat ini server sedang sibuk',
+                                    'Sedang Mengambil Data Ke server',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 35, color: Colors.blueGrey),
                                   ),
                                   Text(
-                                    'silakan tarik ke bawah tulisan ini\n untuk memperbarui data',
+                                    'terlalu lama?\nsilakan tarik ke bawah tulisan ini\n untuk memperbarui data',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 15, color: Colors.blueGrey),

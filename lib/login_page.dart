@@ -3,11 +3,10 @@ import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/Services/providers/user.dart';
-import 'package:dakota/animations/fade_in.dart';
+import 'package:dakota/animations/FadeAnimation.dart';
 import 'package:dakota/forgot_password.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 
 class LoginPage extends StatefulWidget {
@@ -33,301 +32,139 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  void auth(String email, String pass) async {
-    String myurl =
-        "apidinper.reboeng.com/api/login";
-    http.post(myurl, headers: {
-      'Accept': 'application/json',
-    }, body: {
-      "email": email,
-      "password": pass
-    }).then((response) {
-      print(response.statusCode);
-      print(response.body);
-
-      });
-  }
-
   @override
   Widget build(BuildContext context) {
+
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     DakotaProvider dakotaProvider = Provider.of<DakotaProvider>(context);
     BantuanUsaha bantuanUsaha = Provider.of<BantuanUsaha>(context);
     UserProvider userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       key: _loginPageKey,
-      body: ListView(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 50.0, right: 30.0, left: 30.0),
-            child: FadeIn(1.0, Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  "Login",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Alatsi',
-                  ),
-                ),
-                Container(
-                  width: 100,
-                  height: 100,
-                  child: Image.asset('assets/logo.png'),
-                ),
-              ],
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                colors: [
+                  Colors.blue[900],
+                  Colors.blue[800],
+                  Colors.blue[400]
+                ]
+            )
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 80,),
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  FadeAnimation(1, Text("Login", style: TextStyle(color: Colors.white, fontSize: 40),)),
+                  SizedBox(height: 10,),
+                  FadeAnimation(1.3, Text("Selamat datang kembali", style: TextStyle(color: Colors.white, fontSize: 18),)),
+                ],
+              ),
             ),
-            ),
-          ),
-          SizedBox(height: 40.0),
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(right: 50.0, left: 50.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.2,
+            SizedBox(height: 20),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(60), topRight: Radius.circular(60))
                 ),
-                Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      FadeIn(1.4,
-                          TextFormField(
-                            controller: _emailController,
-                            decoration: new InputDecoration(
-                              labelText: "Email",
-                              fillColor: Colors.white,
-                              border: new OutlineInputBorder(
-                                borderRadius: new BorderRadius.circular(25.0),
-                                borderSide: new BorderSide(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 60,),
+                        FadeAnimation(1.4, Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [BoxShadow(
+                                  color: Color.fromRGBO(27, 75, 225, .3),
+                                  blurRadius: 20,
+                                  offset: Offset(0, 10)
+                              )]
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    border: Border(bottom: BorderSide(color: Colors.grey[200]))
+                                ),
+                                child: TextField(
+                                  controller: _emailController,
+                                  decoration: InputDecoration(
+                                      hintText: "Email",
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      border: InputBorder.none
+                                  ),
                                 ),
                               ),
-                              //fillColor: Colors.green
-                            ),
-                            validator: (val) {
-                              if(val.length==0) {
-                                return "Email cannot be empty";
-                              }else{
-                                return null;
-                              }
-                            },
-                            keyboardType: TextInputType.emailAddress,
-                            style: new TextStyle(
-                              fontFamily: "Poppins",
-                            ),
-                          ),
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      FadeIn(1.4,
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration: new InputDecoration(
-                            labelText: "Password",
-                            fillColor: Colors.white,
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.remove_red_eye),
-                              onPressed: _viewPassword,
-                            ),
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(25.0),
-                              borderSide: new BorderSide(
-                              ),
-                            ),
-                            //fillColor: Colors.green
-                          ),
-                          validator: (val) {
-                            if(val.length==0) {
-                              return "Password Tidak Boleh Kosong";
-                            }else{
-                              return null;
-                            }
-                          },
-                          keyboardType: TextInputType.emailAddress,
-                          style: new TextStyle(
-                            fontFamily: "Poppins",
-                          ),
-                          obscureText: _obscureText,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      FadeIn(1.8, Container(
-                        alignment: Alignment.bottomRight,
-                        child: InkWell(
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Colors.grey[700],
-                              fontFamily: 'Alatsi',
-                              fontSize: 15.0,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ForgotPassword()),
-                            );
-                          },
-                        ),
-                      ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 50.0),
-                FadeIn(2.0, InkWell(
-                  child: Container(
-                    height: 45.0,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(20.0),
-                      shadowColor: Colors.grey[300],
-                      color: Colors.white,
-                      borderOnForeground: false,
-                      elevation: 5.0,
-                      child: GestureDetector(
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(
-                                Icons.check,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              SizedBox(
-                                width: 7.0,
-                              ),
-                              Text(
-                                "LOG IN",
-                                style: TextStyle(
-                                  fontFamily: 'Alatsi',
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    border: Border(bottom: BorderSide(color: Colors.grey[200]))
+                                ),
+                                child: TextField(
+                                  controller: _passwordController,
+                                  decoration: InputDecoration(
+                                    hintText: "Password",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                    suffixIcon: IconButton(
+                                      icon: Icon(Icons.remove_red_eye),
+                                      onPressed: _viewPassword,
+                                    ),
+                                  ),
+                                  obscureText: _obscureText,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
+                        )),
+                        SizedBox(height: 40,),
+                        FadeAnimation(1.5, InkWell(
+                            onTap: (){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => ForgotPassword()));
+                            }, child: Text("Lupa Password?", style: TextStyle(color: Colors.grey),))),
+                        SizedBox(height: 40,),
+                        FadeAnimation(1.6, InkWell(onTap: () async {
+                          print('Login Start');
+                          await AuthServices.signIn(context, _loginPageKey, authProvider,_emailController.text, _passwordController.text, bantuanUsaha, dakotaProvider, userProvider);
+                        },
+                          child: Container(
+                            height: 50,
+                            margin: EdgeInsets.symmetric(horizontal: 50),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.blue[900]
+                            ),
+                            child: Center(
+                              child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        )),
+                        SizedBox(height: 30,),
+                        FadeAnimation(1.5, Text("App under the auspices of : ", style: TextStyle(color: Colors.grey),)),
+                        SizedBox(height: 30,),
+                        FadeAnimation(1.5, Container(width: 60, height: 70,child: Image.asset('assets/Lambang_Kabupaten_Ponorogo.png')),),
+                        SizedBox(height: 10,),
+                        FadeAnimation(1.5, Text("Dinas Pertanian, Ketahanan Pangan, dan Perikanan\nKabupaten Ponorogo", style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,)),
+                      ],
                     ),
                   ),
-                  onTap: () async {
-                    print('Login Start');
-                    await AuthServices.signIn(context, _loginPageKey, authProvider,_emailController.text, _passwordController.text, bantuanUsaha, dakotaProvider, userProvider);
-                  },
                 ),
-                ),
-                SizedBox(
-                  height: 25.0,
-                ),
-//                FadeIn(2.2, Row(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  children: <Widget>[
-//                    Text(
-//                      'Don\'t Have an Account?',
-//                      style: TextStyle(
-//                        color: Colors.grey[600],
-//                        fontSize: 15.0,
-//                        fontFamily: 'Alatsi',
-//                      ),
-//                    ),
-//                    SizedBox(
-//                      width: 5.0,
-//                    ),
-//                    InkWell(
-//                      child: Text(
-//                        'Register',
-//                        style: TextStyle(
-//                          color: Colors.grey[700],
-//                          fontSize: 18.0,
-//                          fontFamily: 'Alatsi',
-//                          fontWeight: FontWeight.bold,
-//                        ),
-//                      ),
-//                      onTap: () {
-//                        Navigator.push(
-//                          context,
-//                          MaterialPageRoute(builder: (context) => Signup()),
-//                        );
-//                      },
-//                    ),
-//                  ],
-//                ),
-//                ),
-//                SizedBox(
-//                  height: 15.0,
-//                ),
-//                FadeIn(2.4, Text(
-//                  "Continue with",
-//                  style: TextStyle(
-//                    color: Colors.grey,
-//                    fontSize: 18.0,
-//                    fontFamily: 'Alatsi',
-//                    fontWeight: FontWeight.bold,
-//                  ),
-//                ),
-//                ),
-//                SizedBox(
-//                  height: 15.0,
-//                ),
-//                Row(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  children: <Widget>[
-//                    FadeIn(2.6, InkWell(
-//                      child: Container(
-//                        width: 60.0,
-//                        height: 60.0,
-//                        decoration: new BoxDecoration(
-//                          color: Theme.of(context).primaryColor,
-//                          image: new DecorationImage(
-//                            image: new AssetImage('assets/google_plus.png'),
-//                            fit: BoxFit.cover,
-//                          ),
-//                          borderRadius:
-//                          new BorderRadius.all(new Radius.circular(30.0)),
-//                          border: new Border.all(width: 0.0),
-//                        ),
-//                      ),
-//                      onTap: () {},
-//                    ),
-//                    ),
-//                    SizedBox(
-//                      width: 18.0,
-//                    ),
-//                    FadeIn(2.8, InkWell(
-//                      child: Container(
-//                        width: 60.0,
-//                        height: 60.0,
-//                        decoration: new BoxDecoration(
-//                          color: const Color(0xff7c94b6),
-//                          image: new DecorationImage(
-//                            image: new AssetImage('assets/fb.png'),
-//                            fit: BoxFit.cover,
-//                          ),
-//                          borderRadius:
-//                          new BorderRadius.all(new Radius.circular(30.0)),
-//                          border: new Border.all(width: 0.0),
-//                        ),
-//                      ),
-//                      onTap: () {},
-//                    ),
-//                    ),
-//                  ],
-//                ),
-                SizedBox(
-                  height: 15.0,
-                ),
-              ],
-            ),
-          ),
-        ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
