@@ -209,6 +209,31 @@ class DakotaApi{
 
   }
 
+  static Future<void> getLastByUser(DakotaProvider dakotaProvider) async {
+    final prefs = await SharedPreferences.getInstance();
+    await http.get(
+        'http://apidinper.reboeng.com/api/dakota/latest/byUser',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${prefs.getString('token')}'
+        }).then((response) {
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        String content = response.body;
+        List dakota = jsonDecode(content);
+        dakotaProvider.dakotaListLatest = dakota.map((e) => DakotaModel.fromJson(e)).toList();
+        print('success mendapatkan data kelompok tani terbaru');
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        print('gagal mendapatkan data kelompok tani terbaru');
+        print(response.statusCode.toString());
+      }
+    });
+
+  }
+
   static Future<void> getPersonalGroup(BuildContext context, DakotaProvider dakotaProvider,int id, BantuanUsaha bantuanUsaha) async {
 
     final prefs = await SharedPreferences.getInstance();
