@@ -3,6 +3,7 @@ import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/animations/sizeconfig.dart';
+import 'package:dakota/dakota_add.dart';
 import 'package:dakota/home.dart';
 import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +81,12 @@ class _DarkotaViewAllState extends State<DarkotaViewAll> {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
                 }),
             actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add, color: Colors.blueGrey),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DakotaAdd()));
+                },
+              ),
               IconButton(
                 icon: Icon(Icons.search, color: Colors.blueGrey),
                 onPressed: () {

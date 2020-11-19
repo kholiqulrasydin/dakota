@@ -7,8 +7,8 @@ import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/Services/providers/user.dart';
+import 'package:dakota/home.dart';
 import 'package:dakota/login_page.dart';
-import 'package:dakota/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -47,9 +47,12 @@ class AuthServices {
 
       await UserApi.userFetch(userProvider);
 
-      return await initialLogged(context, bantuanUsaha, dakotaProvider).then(
-          (value) => Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) => Wrapper())));
+      return Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+
+//      return await initialLogged(context, bantuanUsaha, dakotaProvider).then(
+//          (value) => Navigator.of(context)
+//              .pushReplacement(MaterialPageRoute(builder: (context) => HomePage())));
     } else {
       print('Login Error');
       if(response.statusCode == 500){

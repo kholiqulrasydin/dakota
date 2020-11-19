@@ -4,6 +4,7 @@ import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/Services/providers/user.dart';
 import 'package:dakota/wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -12,8 +13,14 @@ void main() {
 }
 
 class StartDakota extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+//    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+//      systemNavigationBarColor: Colors.blue[600],
+//      statusBarBrightness: Brightness.light,
+//      statusBarIconBrightness: Brightness.dark
+//    ));
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
@@ -29,6 +36,7 @@ class StartDakota extends StatelessWidget {
             canvasColor: Colors.white,
           ),
           theme: ThemeData(
+            primaryColor: Colors.blue[400],
             canvasColor: Colors.white,
             backgroundColor: Colors.white,
             scaffoldBackgroundColor: Colors.white,
