@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:dakota/Services/api/gallery.dart';
+import 'package:dakota/animations/sizeconfig.dart';
+import 'package:dakota/image_gallery/gallery.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -13,6 +16,11 @@ class SaveImageScreen extends StatefulWidget {
 class _SaveImageScreenState extends State<SaveImageScreen> {
   File image;
   bool savedImage;
+
+  TextEditingController judulController = TextEditingController();
+  TextEditingController subJudulController = TextEditingController();
+  TextEditingController detailsController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -20,12 +28,18 @@ class _SaveImageScreenState extends State<SaveImageScreen> {
     savedImage = false;
   }
 
-  Future saveImage() async {
+  Future saveImage(String judul, String subjudul, String captions) async {
     renameImage();
-    await GallerySaver.saveImage(image.path, albumName: "PhotoEditor");
+    await GallerySaver.saveImage(image.path, albumName: "Dakota");
+    await GalleryApi().insert({
+      'title' : judul,
+      'subtitle' : subjudul,
+      'details' : captions
+    }, image, print);
     setState(() {
       savedImage = true;
     });
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FrontGallery()));
   }
 
   void renameImage() {
@@ -43,88 +57,120 @@ class _SaveImageScreenState extends State<SaveImageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           "Upload Foto",
-          style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          children: <Widget>[
-            ClipRRect(
-              child: Container(
-                color: Theme.of(context).hintColor,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width,
-                child: PhotoView(
-                  imageProvider: FileImage(image),
-                  backgroundDecoration: BoxDecoration(
-                    color: Theme.of(context).hintColor,
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+        child: Container(
+          color: Colors.white,
+          child: ListView(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: <Widget>[
+              ClipRRect(
+                child: Container(
+                  color: Theme.of(context).hintColor,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width,
+                  child: PhotoView(
+                    imageProvider: FileImage(image),
+                    backgroundDecoration: BoxDecoration(
+                      color: Theme.of(context).hintColor,
+                    ),
                   ),
                 ),
               ),
-            ),
-            //
-            Spacer(),
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FloatingActionButton.extended(
-                      disabledElevation: 0,
-                      heroTag: "SAVE",
-                      icon: Icon(Icons.save),
-                      label: savedImage ? Text("SAVED") : Text("SAVE"),
-                      backgroundColor: savedImage
-                          ? Colors.grey
-                          : Theme.of(context).primaryColor,
-                      onPressed: savedImage
-                          ? null
-                          : () {
-                        saveImage();
-                      }),
-                ),
-              ],
-            ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    child: Center(
-                      child: Icon(
-                        Icons.info,
-                        color: Theme.of(context).accentColor.withOpacity(0.6),
+              //
+              Spacer(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthMultiplier * 10),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                      controller: judulController,
+                      decoration: InputDecoration(
+                        labelText: 'Judul',
                       ),
                     ),
+                    TextField(
+                      controller: subJudulController,
+                      decoration: InputDecoration(
+                        labelText: 'sub judul',
+                      ),
+                    ),
+                    TextField(
+                      controller: detailsController,
+                      decoration: InputDecoration(
+                        labelText: 'Rincian Kegiatan',
+                      ),
+                      keyboardType: TextInputType.multiline,
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FloatingActionButton.extended(
+                        disabledElevation: 0,
+                        heroTag: "SAVE",
+                        icon: Icon(Icons.save),
+                        label: savedImage ? Text("UPLOADED") : Text("UPLOAD"),
+                        backgroundColor: savedImage
+                            ? Colors.grey
+                            : Theme.of(context).primaryColor,
+                        onPressed: savedImage
+                            ? null
+                            : () {
+                          saveImage(judulController.text, subJudulController.text, detailsController.text);
+                        }),
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(2.0),
+                ],
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.1,
                       child: Center(
-                        child: Text(
-                          "Note - The images are saved in the best possible quality.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 10,
-                            color:
-                            Theme.of(context).accentColor.withOpacity(0.6),
+                        child: Icon(
+                          Icons.info,
+                          color: Theme.of(context).accentColor.withOpacity(0.6),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Center(
+                          child: Text(
+                            "Note - The images are saved in the best possible quality.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color:
+                              Theme.of(context).accentColor.withOpacity(0.6),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

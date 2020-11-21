@@ -1,9 +1,11 @@
-
+import 'package:carousel_pro/carousel_pro.dart';
+import 'package:dakota/Services/api/gallery.dart';
 import 'package:dakota/Services/auth.dart';
 import 'package:dakota/animations/sizeconfig.dart';
 import 'package:dakota/dakota_add.dart';
 import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/edit_profile_page.dart';
+import 'package:dakota/image_gallery/gallery.dart';
 import 'package:dakota/users_statistic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +20,11 @@ class _HomePageState extends State<HomePage> {
   final _drawerKey = GlobalKey<ScaffoldState>();
 
   final List<String> _listItem = [
-    'assets/farmer.png',
+    'assets/kelompok.jpeg',
     'assets/statistics.png',
-    'assets/total-comander.png',
+    'assets/visualisasi.jpeg',
     'assets/gallery.png',
-    'assets/admin.png',
+    'assets/admin.jpeg',
     'assets/user.png',
   ];
 
@@ -195,13 +197,9 @@ class _HomePageState extends State<HomePage> {
                       children: <Widget>[
                         Container(
                           width: double.infinity,
-                          height: 250,
+                          height: SizeConfig.heightMultiplier * 25,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                  image: AssetImage('assets/kontjotanie.jpg'),
-                                  fit: BoxFit.cover
-                              )
                           ),
                           child: Container(
                             decoration: BoxDecoration(
@@ -214,23 +212,18 @@ class _HomePageState extends State<HomePage> {
                                     ]
                                 )
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Text("kegiatan kami", style: TextStyle(color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold),),
-                                SizedBox(height: 30,),
-                                Container(
-                                  height: 50,
-                                  margin: EdgeInsets.symmetric(horizontal: 40),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white
+                            child: FutureBuilder(
+                                      future: GalleryApi().fetchAll((response) => response),
+                                      builder: (BuildContext context, AsyncSnapshot snapshot)
+                                      =>Carousel(
+                                        borderRadius: true,
+                                        images: (snapshot.hasData) ? snapshot.data.map<NetworkImage>((_listItem)
+                                        => NetworkImage(_listItem['image_url'])).toList() : [AssetImage('assets/kontjotanie.jpg')],
+                                        boxFit: BoxFit.fitHeight,
+                                        radius: Radius.circular(20),
+                                        
+                                      )
                                   ),
-                                  child: Center(child: Text("Lihat Lainnya", style: TextStyle(color: Colors.blue[900], fontWeight: FontWeight.bold),)),
-                                ),
-                                SizedBox(height: 30,),
-                              ],
-                            ),
                           ),
                         ),
                         SizedBox(height: 20,),
@@ -266,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                               title: 'Gallery Kegiatan',
                               assetImage: _listItem[3],
                               onTap: (){
-
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => FrontGallery()));
                               },
                             ),
                             BuildFeaturesCard(
@@ -335,7 +328,7 @@ class BuildFeaturesCard extends StatelessWidget {
                 child: Transform.translate(
                   offset: Offset(50, -50),
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 65, vertical: 63),
+                    margin: EdgeInsets.symmetric(horizontal: SizeConfig.widthMultiplier * 15, vertical: SizeConfig.heightMultiplier * 5),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
 //                        color: Colors.white

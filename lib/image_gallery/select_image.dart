@@ -54,7 +54,8 @@ class _SelectBottomPanelState extends State<SelectBottomPanel> {
             Spacer(),
             Text(
               "Silahkan Pilih Foto untuk diupload",
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headline6,
+              textAlign: TextAlign.center,
             ),
             Spacer(),
             Row(
