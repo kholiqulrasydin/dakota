@@ -84,9 +84,10 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
+        backgroundColor: Colors.white,
           title: Text(
             "Edit Image",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
           actions: <Widget>[
             IconButton(
