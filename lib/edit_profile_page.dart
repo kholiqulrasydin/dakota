@@ -65,19 +65,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.blueAccent.shade400,
-            ),
-            onPressed: () {
-//              Navigator.of(context).push(MaterialPageRoute(
-//                  builder: (BuildContext context) => SettingsPage()));
-            },
-          ),
-        ],
+        )
       ),
       body: Container(
         padding: EdgeInsets.only(left: 16, top: 25, right: 16),

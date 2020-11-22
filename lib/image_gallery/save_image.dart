@@ -8,7 +8,9 @@ import 'package:photo_view/photo_view.dart';
 
 class SaveImageScreen extends StatefulWidget {
   final List arguments;
+
   SaveImageScreen({this.arguments});
+
   @override
   _SaveImageScreenState createState() => _SaveImageScreenState();
 }
@@ -28,18 +30,16 @@ class _SaveImageScreenState extends State<SaveImageScreen> {
     savedImage = false;
   }
 
-  Future saveImage(String judul, String subjudul, String captions) async {
+  Future saveImage(String judul, String subjudul,
+      String captions) async {
     renameImage();
     await GallerySaver.saveImage(image.path, albumName: "Dakota");
-    await GalleryApi().insert({
-      'title' : judul,
-      'subtitle' : subjudul,
-      'details' : captions
-    }, image, print);
     setState(() {
       savedImage = true;
     });
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FrontGallery()));
+    await GalleryApi().insert(
+        {'title': judul, 'subtitle': subjudul, 'details': captions},
+        image, print);
   }
 
   void renameImage() {
@@ -60,9 +60,14 @@ class _SaveImageScreenState extends State<SaveImageScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
+        title: (!savedImage) ? Text(
           "Upload Foto",
-        ),
+        ) : Text('Foto Tersimpan'),
+        actions: <Widget>[
+          (!savedImage) ? Text('') : IconButton(icon: Icon(Icons.exit_to_app), onPressed: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => FrontGallery()));
+          })
+        ],
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(
@@ -89,7 +94,8 @@ class _SaveImageScreenState extends State<SaveImageScreen> {
               //
               Spacer(),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthMultiplier * 10),
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.widthMultiplier * 10),
                 child: Column(
                   children: <Widget>[
                     TextField(
@@ -116,21 +122,43 @@ class _SaveImageScreenState extends State<SaveImageScreen> {
               ),
               Column(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FloatingActionButton.extended(
-                        disabledElevation: 0,
-                        heroTag: "SAVE",
-                        icon: Icon(Icons.save),
-                        label: savedImage ? Text("UPLOADED") : Text("UPLOAD"),
-                        backgroundColor: savedImage
-                            ? Colors.grey
-                            : Theme.of(context).primaryColor,
-                        onPressed: savedImage
-                            ? null
-                            : () {
-                          saveImage(judulController.text, subJudulController.text, detailsController.text);
-                        }),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FloatingActionButton.extended(
+                            disabledElevation: 0,
+                            heroTag: "SAVE",
+                            icon: Icon(Icons.save),
+                            label: savedImage ? Text("TERUNGGAH") : Text("UNGGAH"),
+                            backgroundColor: savedImage
+                                ? Colors.grey
+                                : Theme.of(context).primaryColor,
+                            onPressed: savedImage
+                                ? null
+                                : () async {
+                              saveImage(
+                                  judulController.text,
+                                  subJudulController.text,
+                                  detailsController.text);
+                            }
+                            ),
+                      ),
+                      (savedImage) ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FloatingActionButton.extended(
+                            disabledElevation: 0,
+                            heroTag: "BACK",
+                            icon: Icon(Icons.save),
+                            label: Text('KEMBALI'),
+                            backgroundColor: Theme.of(context).primaryColor,
+                            onPressed: (){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => FrontGallery()));
+                            }
+                        ),
+                      ) : Text(''),
+                    ],
                   ),
                 ],
               ),
@@ -159,8 +187,9 @@ class _SaveImageScreenState extends State<SaveImageScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 10,
-                              color:
-                              Theme.of(context).accentColor.withOpacity(0.6),
+                              color: Theme.of(context)
+                                  .accentColor
+                                  .withOpacity(0.6),
                             ),
                           ),
                         ),

@@ -1,14 +1,17 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:dakota/Services/api/gallery.dart';
 import 'package:dakota/Services/auth.dart';
+import 'package:dakota/Services/providers/user.dart';
 import 'package:dakota/animations/sizeconfig.dart';
 import 'package:dakota/dakota_add.dart';
 import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/edit_profile_page.dart';
 import 'package:dakota/image_gallery/gallery.dart';
+import 'package:dakota/ruang_admin.dart';
 import 'package:dakota/users_statistic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -30,6 +33,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    UserProvider  userProvider = Provider.of<UserProvider>(context);
+    
+    void _onSelectedPopUp(value) async {
+      if(value == 'logout'){
+        await AuthServices.signOut(context);
+      }
+    }
     return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
       return OrientationBuilder(
           builder: (BuildContext context, Orientation orientation) {
@@ -184,7 +195,9 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(color: Colors.blueAccent),
                 ),
                 actions: <Widget>[
-                  IconButton(icon: Icon(Icons.search, color: Colors.blueAccent,), onPressed: () {  },)
+                  PopupMenuButton(icon: Icon(Icons.more_vert, color: Colors.blueAccent,), onSelected: _onSelectedPopUp, itemBuilder: (BuildContext context) => [
+                    PopupMenuItem(value: 'logout', child: Text('Logout'))
+                  ])
                 ],
               ),
               body: SafeArea(
@@ -201,29 +214,50 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                gradient: LinearGradient(
-                                    begin: Alignment.bottomRight,
-                                    colors: [
-                                      Colors.blue[900].withOpacity(.4),
-                                      Colors.blue[900].withOpacity(.2),
-                                    ]
-                                )
-                            ),
-                            child: FutureBuilder(
-                                      future: GalleryApi().fetchAll((response) => response),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot)
-                                      =>Carousel(
-                                        borderRadius: true,
-                                        images: (snapshot.hasData) ? snapshot.data.map<NetworkImage>((_listItem)
-                                        => NetworkImage(_listItem['image_url'])).toList() : [AssetImage('assets/kontjotanie.jpg')],
-                                        boxFit: BoxFit.fitHeight,
-                                        radius: Radius.circular(20),
-                                        
-                                      )
+                          child: FutureBuilder(
+                              future: GalleryApi().fetchAll((response) => response),
+                              builder: (BuildContext context, AsyncSnapshot snapshot)
+                              =>Carousel(
+                                showIndicator: false,
+                                borderRadius: true,
+                                images: (snapshot.hasData) ? snapshot.data.map<Container>((_listItem)
+                                => Container(
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage(_listItem['image_url']),
+                                          fit: BoxFit.fitHeight
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      gradient: LinearGradient(
+                                          begin: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.blue[900].withOpacity(.4),
+                                            Colors.blue[900].withOpacity(.1),
+                                          ]
+                                      ),
                                   ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Container(
+                                        margin: EdgeInsets.only(top: SizeConfig.heightMultiplier * 16),
+                                        padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthMultiplier * 2),
+                                        alignment: Alignment.center,
+                                        height: SizeConfig.heightMultiplier * 7,
+                                        decoration: BoxDecoration(
+                                          backgroundBlendMode: BlendMode.darken,
+                                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                                          color: Colors.blueGrey.withOpacity(0.7)
+                                        ),
+                                        child: Text(_listItem['details'], overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white),),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                                ).toList() : [AssetImage('assets/kontjotanie.jpg')],
+                                boxFit: BoxFit.fitHeight,
+                                radius: Radius.circular(20),
+                              )
                           ),
                         ),
                         SizedBox(height: 20,),
@@ -262,13 +296,14 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => FrontGallery()));
                               },
                             ),
+                            userProvider.personalUser.first.privileges == 1 ?
                             BuildFeaturesCard(
                               title: 'Ruang Admin',
                               assetImage: _listItem[4],
                               onTap: (){
-
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => RuangAdmin()));
                               },
-                            ),
+                            ): Text(''),
                             BuildFeaturesCard(
                               title: 'Statistik Anda',
                               assetImage: _listItem[5],
@@ -288,7 +323,10 @@ class _HomePageState extends State<HomePage> {
       );
       }
     );
+
+
   }
+
 }
 
 class BuildFeaturesCard extends StatelessWidget {

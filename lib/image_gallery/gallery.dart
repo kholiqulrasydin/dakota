@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dakota/Services/api/gallery.dart';
+import 'package:dakota/Services/providers/user.dart';
+import 'package:dakota/home.dart';
 import 'package:dakota/image_gallery/details_page.dart';
 import 'package:dakota/image_gallery/edit_image.dart';
 import 'package:dakota/image_gallery/select_image.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class FrontGallery extends StatefulWidget {
   @override
@@ -16,7 +19,7 @@ class FrontGallery extends StatefulWidget {
 
 class _FrontGalleryState extends State<FrontGallery> {
   double appbarHeight = AppBar().preferredSize.height;
-  GalleryApi galleryApi = new GalleryApi();
+  GalleryApi galleryApi = GalleryApi();
   File _image;
   final picker = ImagePicker();
 
@@ -41,6 +44,7 @@ class _FrontGalleryState extends State<FrontGallery> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -99,6 +103,14 @@ class _FrontGalleryState extends State<FrontGallery> {
           SizedBox(width: 4),
         ],
         elevation: 0,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.blueGrey,
+            ),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+            }),
       ),
       body: FutureBuilder(
         future: galleryApi.fetchAll((response) => response),
@@ -149,15 +161,20 @@ class _FrontGalleryState extends State<FrontGallery> {
                                     maxLines: 2,
                                   ),
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.more_horiz),
-                                  splashColor: Colors.transparent,
-
-                                  // highlightColor: null,
-                                  onPressed: () {
-                                    print(item);
-                                  },
-                                )
+                                (userProvider.personalUser.first.privileges != 0) ?PopupMenuButton(
+                                  onSelected: _onPopUpSelected,
+                                    itemBuilder: (BuildContext context) =>
+                                    [
+                                      PopupMenuItem(
+                                        value: 'e${item['id']}',
+                                        child: Text('Edit Caption')
+                                      ),
+                                      PopupMenuItem(
+                                        value: 'd${item['id']}',
+                                        child: Text('Delete Foto'),
+                                      ),
+                                    ]
+                                ) : Icon(Icons.arrow_forward)
                               ],
                             )
                           ],
@@ -175,5 +192,22 @@ class _FrontGalleryState extends State<FrontGallery> {
                   ),
       ),
     );
+  }
+
+  void _onPopUpSelected(String value) async {
+    switch(value.substring(0,1)){
+      case 'e':
+        print('editing ${value.substring(1)}');
+        break;
+
+        case 'd':
+          print('deleting ${value.substring(1)}');
+          await galleryApi.delete(value.substring(1), (response) => print(response));
+          setState(() {
+            galleryApi = new GalleryApi();
+          });
+        break;
+
+    }
   }
 }
