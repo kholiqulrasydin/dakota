@@ -122,10 +122,7 @@ class _DarkotaViewAllState extends State<DarkotaViewAll> {
                                   ),
                                 ],
                               )))))
-              : SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  child: Container(
+              : Container(
                     height: size.height,
                     child: Column(
                       children: <Widget>[
@@ -163,7 +160,6 @@ class _DarkotaViewAllState extends State<DarkotaViewAll> {
                               }),
                         )),
                       ],
-                    ),
                   ),
                 ),
         ),

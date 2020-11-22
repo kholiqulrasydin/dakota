@@ -88,6 +88,7 @@ class _BantuanCreateState extends State<BantuanCreate> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('Tambah Bantuan Usaha'),
       ),
       body: Padding(

@@ -9,7 +9,7 @@ class UserProvider with ChangeNotifier{
   UserProvider _currentUserProvider;
 
   UnmodifiableListView<UserModel> get personalUser => UnmodifiableListView(_personalUser);
-  UnmodifiableListView<UserModel> get users => UnmodifiableListView(_users);
+  UnmodifiableListView<UserModel> get usersList => UnmodifiableListView(_users);
 
   UserProvider get userProvider => _currentUserProvider;
 
@@ -18,7 +18,7 @@ class UserProvider with ChangeNotifier{
     notifyListeners();
   }
 
-  set users(List<UserModel> users){
+  set usersList(List<UserModel> users){
     _users = users;
     notifyListeners();
   }

@@ -1,6 +1,9 @@
 import 'package:dakota/animations/sizeconfig.dart';
 import 'package:dakota/home.dart';
+import 'package:dakota/user_list.dart';
 import 'package:flutter/material.dart';
+
+import 'dakota_viewAll.dart';
 
 class RuangAdmin extends StatefulWidget {
   @override
@@ -36,11 +39,16 @@ class _RuangAdminState extends State<RuangAdmin> {
               mainAxisSpacing: 10,
               children: <Widget>[
               BuildFeaturesCard(
-                assetImage: 'assets/user.png', onTap: () {}, title: 'Data User'),
+                assetImage: 'assets/user.png', onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserListView()));
+              }, title: 'Data User'),
               BuildFeaturesCard(
-                assetImage: 'assets/gallery.png', onTap: () {}, title: 'Data Kegiatan'),
+                assetImage: 'assets/gallery.png', onTap: () {
+              }, title: 'Data Kegiatan'),
               BuildFeaturesCard(
-              assetImage: 'assets/kelompok.jpeg', onTap: () {}, title: 'Data Kelompok')
+              assetImage: 'assets/kelompok.jpeg', onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => DarkotaViewAll()));
+                }, title: 'Data Kelompok')
         ],
       ),
           )),
