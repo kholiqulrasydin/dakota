@@ -1,4 +1,5 @@
 import 'package:dakota/animations/sizeconfig.dart';
+import 'package:dakota/gallery_list.dart';
 import 'package:dakota/home.dart';
 import 'package:dakota/user_list.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class _RuangAdminState extends State<RuangAdmin> {
               }, title: 'Data User'),
               BuildFeaturesCard(
                 assetImage: 'assets/gallery.png', onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => GalleryList()));
               }, title: 'Data Kegiatan'),
               BuildFeaturesCard(
               assetImage: 'assets/kelompok.jpeg', onTap: () {

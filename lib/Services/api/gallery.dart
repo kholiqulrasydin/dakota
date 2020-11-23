@@ -23,6 +23,34 @@ class GalleryApi extends Dynamicaly{
     }
     return throw Exception("Failed to load $entity");
   }
+  
+  Future<List> fetchOnce(int id, Function callback) async {
+    print("requested once");
+    final response = await doGet(setURL("getOne/$id"));
+    List<dynamic> list = [];
+
+    if(response.statusCode == 200){
+      for (var item in json.decode(response.body)) {
+        list.add(this.convertJsonToObj(item));
+        callback(list);
+      }
+      return list;
+    }
+    return throw Exception("Failed to load $entity Once");
+  }
+  
+  Future<dynamic> stringUpdate(dynamic obj, Function callback) async {
+    final response = await doStringPost(setURL('update'), convertObjToJson(obj));
+
+    if (response.statusCode == 200) {
+      var result = convertJsonToObj(json.decode(response.body));
+      callback(result);
+      return result;
+    } else {
+      print(response.statusCode.toString());
+      throw Exception('Failed to update $entity');
+    }
+  }
 
   void printString(dynamic obj) {
     print(this.convertObjToJson(obj));
@@ -85,20 +113,22 @@ class GalleryApi extends Dynamicaly{
     request.files.add(file);
     request.headers.addAll(header);
 
-//    request.headers[header];
-
-
-//    final response = await http.post(url, headers: <String, String>{
-//      'Accept': 'application/json',
-//      'Authorization': 'Bearer ${prefs.getString('token')}'
-//    }, body: jsonObj);
-    // endLoading();
-
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return response;
   }
 
+  Future doStringPost(String url, jsonObj) async {
+    final prefs = await SharedPreferences.getInstance();
+    await delayResponse();
+    final response = await http.post('$url', headers: <String, String>{
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString('token')}'
+    }, body: jsonObj);
+
+    return response;
+  }
+  
   Future doDelete(String url, String id) async {
     final prefs = await SharedPreferences.getInstance();
     await delayResponse();
@@ -163,6 +193,8 @@ abstract class Dynamicaly{
 
   // update
   Future<dynamic> update(dynamic obj, File image, Function callback);
+  
+  Future<dynamic> stringUpdate(dynamic obj, Function callback);
 
   // delete
   Future delete(id, Function callback);
