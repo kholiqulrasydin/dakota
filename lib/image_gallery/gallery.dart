@@ -5,7 +5,9 @@ import 'package:dakota/Services/providers/user.dart';
 import 'package:dakota/home.dart';
 import 'package:dakota/image_gallery/details_page.dart';
 import 'package:dakota/image_gallery/edit_image.dart';
+import 'package:dakota/image_gallery/gallery_edit.dart';
 import 'package:dakota/image_gallery/select_image.dart';
+import 'package:dakota/model/gallery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -198,6 +200,11 @@ class _FrontGalleryState extends State<FrontGallery> {
     switch(value.substring(0,1)){
       case 'e':
         print('editing ${value.substring(1)}');
+        List<Gallery> gData = [];
+        await galleryApi.fetchOnce(int.parse(value.substring(1)), (response) => response).then((value) {
+          gData = value.map((e) => Gallery.formMap(e)).toList();
+        });
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => GalleryEdit(int.parse(value.substring(1)), gData)));
         break;
 
         case 'd':

@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:dakota/Services/providers/dakota.dart';
-import 'package:dakota/dakota_add.dart';
+import 'package:dakota/animations/sizeconfig.dart';
+import 'package:dakota/dakota_edit.dart';
 import 'package:dakota/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
-import 'animations/sizeconfig.dart';
-
-class AddAddressMapper extends StatefulWidget {
+class EditAddressMapper extends StatefulWidget {
   final String namaKelompok;
   final String namaKetua;
   final String alamat;
@@ -22,13 +21,15 @@ class AddAddressMapper extends StatefulWidget {
   final String luasSawah;
   final String luasTegal;
   final String luasPekarangan;
+  final String id;
 
-  const AddAddressMapper({Key key, this.namaKelompok ='n', this.namaKetua ='n', this.alamat ='n', this.kelurahan ='n', this.kecamatan ='n', this.jumlahAnggotalaki ='n', this.jumlahAnggotaPerempuan ='n', this.luasSawah ='n', this.luasPekarangan ='n', this.luasTegal ='n', this.bidangUsaha ='n', this.subBidangUsaha});
+  const EditAddressMapper({Key key, this.namaKelompok ='n', this.namaKetua ='n', this.alamat ='n', this.kelurahan ='n', this.kecamatan ='n', this.jumlahAnggotalaki ='n', this.jumlahAnggotaPerempuan ='n', this.luasSawah ='n', this.luasPekarangan ='n', this.luasTegal ='n', this.bidangUsaha ='n', this.subBidangUsaha, @required this.id});
+
   @override
-  _AddAddressMapperState createState() => _AddAddressMapperState();
+  _EditAddressMapperState createState() => _EditAddressMapperState();
 }
 
-class _AddAddressMapperState extends State<AddAddressMapper> {
+class _EditAddressMapperState extends State<EditAddressMapper> {
   String latitude, longtitude;
   Completer<GoogleMapController> _controller = Completer();
   MapType _currentMapType = MapType.normal;
@@ -125,17 +126,17 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
             margin: EdgeInsets.only(bottom: SizeConfig.heightMultiplier * 13),
             child: (itsOkay)
                 ? RoundedButton(
-                    color: Colors.blueGrey,
-                    text: "Simpan Lokasi",
-                    press: () {
-                      _controller.isCompleted;
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => DakotaAdd(namaKelompok: widget.namaKelompok, namaKetua: widget.namaKetua, alamat: widget.alamat, kelurahan: widget.kelurahan, kecamatan: widget.kecamatan, jumlahAnggotalaki: widget.jumlahAnggotalaki, jumlahAnggotaPerempuan: widget.jumlahAnggotaPerempuan, luasSawah: widget.luasSawah, luasPekarangan: widget.luasPekarangan, luasTegal: widget.luasTegal, latitude: latitude, longtitude: longtitude, bidangUsaha: widget.bidangUsaha, subBidangUsaha: widget.subBidangUsaha,)));
-                    },
-                  )
+              color: Colors.blueGrey,
+              text: "Simpan Lokasi",
+              press: () {
+                _controller.isCompleted;
+                Navigator.push(context, MaterialPageRoute(builder: (context) => DakotaEditingForm(namaKelompok: widget.namaKelompok, namaKetua: widget.namaKetua, alamat: widget.alamat, kelurahan: widget.kelurahan, kecamatan: widget.kecamatan, jumlahAnggotalaki: widget.jumlahAnggotalaki, jumlahAnggotaPerempuan: widget.jumlahAnggotaPerempuan, luasSawah: widget.luasSawah, luasPekarangan: widget.luasPekarangan, luasTegal: widget.luasTegal, latitude: latitude, longtitude: longtitude, bidangUsaha: widget.bidangUsaha, subBidangUsaha: widget.subBidangUsaha, id: widget.id,)));
+              },
+            )
                 : Container(
-                    child: Text(''),
-                    decoration: BoxDecoration(color: Colors.transparent),
-                  ),
+              child: Text(''),
+              decoration: BoxDecoration(color: Colors.transparent),
+            ),
           ),
         ],
       ),
@@ -158,7 +159,7 @@ class _AddAddressMapperState extends State<AddAddressMapper> {
           title: point.toString(),
         ),
         icon:
-            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
       ));
       latitude = point.latitude.toString();
       longtitude = point.longitude.toString();

@@ -5,7 +5,6 @@ import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/dakota_view.dart';
-import 'package:dakota/dakota_viewAll.dart';
 import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DakotaApi{
 
-  static Future<void> createDakota(
+  static Future<int> createDakota(
       BuildContext context,
       AuthProvider authProvider,
       String namaKelompok,
@@ -26,11 +25,14 @@ class DakotaApi{
       String geoLatitude,
       String geoLongtitude,
       String namaKetua,
-      int jumlahAnggota,
-      String jenisLahan,
-      int luasLahan,
+      int jumlahAnggotaLaki,
+      int jumlahAnggotaPerempuan,
+      int luasSawah,
+      int luasTegal,
+      int luasPekarangan,
       String bidangUsaha,
       String subBidangUsaha) async {
+    int turn;
     final prefs = await SharedPreferences.getInstance();
     await http.post(
       'http://apidinper.reboeng.com/api/dakota',
@@ -47,21 +49,25 @@ class DakotaApi{
         'geo_latitude': geoLatitude,
         'geo_longtitude': geoLongtitude,
         'nama_ketua': namaKetua,
-        'jumlah_anggota': jumlahAnggota.toString(),
-        'jenis_lahan': jenisLahan,
-        'luas_lahan': luasLahan.toString(),
+        'jml_agt_lk': jumlahAnggotaLaki.toString(),
+        'jml_agt_pr': jumlahAnggotaPerempuan.toString(),
+        'luas_sawah': luasSawah.toString(),
+        'luas_tegal': luasTegal.toString(),
+        'luas_pekarangan': luasPekarangan.toString(),
         'bidang_usaha': bidangUsaha,
         'sub_bidang_usaha': subBidangUsaha,
       }).then((response) async {
       print(response.statusCode.toString());
       if (response.statusCode == 200) {
         print('oke! status ${response.statusCode}');
-        return Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>DarkotaViewAll()));
+        return turn = 200;
       } else {
         print('Failed To Create Dakota');
+        return turn = 500;
       }
     });
 
+    return turn;
 
   }
 
@@ -78,9 +84,11 @@ class DakotaApi{
       String geoLatitude,
       String geoLongtitude,
       String namaKetua,
-      int jumlahAnggota,
-      String jenisLahan,
-      int luasLahan,
+      int jumlahAnggotaLaki,
+      int jumlahAnggotaPerempuan,
+      int luasSawah,
+      int luasTegal,
+      int luasPekarangan,
       String bidangUsaha,
       String subBidangUsaha,
       int id) async {
@@ -99,9 +107,11 @@ class DakotaApi{
           'geo_latitude': geoLatitude,
           'geo_longtitude': geoLongtitude,
           'nama_ketua': namaKetua,
-          'jumlah_anggota': jumlahAnggota.toString(),
-          'jenis_lahan': jenisLahan,
-          'luas_lahan': luasLahan.toString(),
+          'jml_agt_lk': jumlahAnggotaLaki.toString(),
+          'jml_agt_pr': jumlahAnggotaPerempuan.toString(),
+          'luas_sawah': luasSawah.toString(),
+          'luas_tegal': luasTegal.toString(),
+          'luas_pekarangan': luasPekarangan.toString(),
           'bidang_usaha': bidangUsaha,
           'sub_bidang_usaha': subBidangUsaha,
         }).then((response) {

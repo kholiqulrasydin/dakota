@@ -48,7 +48,7 @@ class _RuangAdminState extends State<RuangAdmin> {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => GalleryList()));
               }, title: 'Data Kegiatan'),
               BuildFeaturesCard(
-              assetImage: 'assets/kelompok.jpeg', onTap: () {
+              assetImage: 'assets/kelompok.jpg', onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => DarkotaViewAll()));
                 }, title: 'Data Kelompok')
         ],

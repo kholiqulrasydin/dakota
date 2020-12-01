@@ -8,15 +8,16 @@ class DakotaModel{
   String geoLatitude;
   String geoLongtitude;
   String namaKetua;
-  int jumlahAnggota;
-  String jenisLahan;
-  int luasLahan;
+  int jumlahLaki;
+  int jumlahPerempuan;
+  int luasSawah;
+  int luasTegal;
+  int luasPekarangan;
   String bidangUsaha;
   String subBidangUsaha;
 
   DakotaModel({this.id,this.namaKelompok,this.nomorRegister,this.alamat,this.kecamatan
-    ,this.kelurahan,this.geoLatitude, this.geoLongtitude,this.namaKetua,this.jumlahAnggota,this.jenisLahan
-    ,this.luasLahan,this.bidangUsaha,this.subBidangUsaha,});
+    ,this.kelurahan,this.geoLatitude, this.geoLongtitude,this.namaKetua, this.jumlahLaki, this.jumlahPerempuan,this.luasSawah, this.luasTegal, this.luasPekarangan,this.bidangUsaha,this.subBidangUsaha,});
 
   factory DakotaModel.fromJson(Map<String, dynamic> json) {
     return DakotaModel(
@@ -29,9 +30,11 @@ class DakotaModel{
       geoLatitude: json['geo_latitude'],
       geoLongtitude: json['geo_longtitude'],
       namaKetua: json['nama_ketua'],
-      jumlahAnggota: json['jumlah_anggota'],
-      jenisLahan: json['jenis_lahan'],
-      luasLahan: json['luas_lahan'],
+      jumlahLaki: json['jml_agt_lk'],
+      jumlahPerempuan: json['jml_agt_pr'],
+      luasSawah: json['luas_sawah'],
+      luasTegal: json['luas_tegal'],
+      luasPekarangan: json['luas_pekarangan'],
       bidangUsaha: json['bidang_usaha'],
       subBidangUsaha: json['sub_bidang_usaha'],
     );

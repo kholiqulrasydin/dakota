@@ -20,7 +20,7 @@ class Loader extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(top: 25),
           child: Text(
-            'sedang mengambil data, mohon bersabar',
+            'sedang memproses data, mohon bersabar',
             style: TextStyle(color: MyColors.textColor, fontSize: 10),
           ),
         )

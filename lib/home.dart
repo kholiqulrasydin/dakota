@@ -23,9 +23,9 @@ class _HomePageState extends State<HomePage> {
   final _drawerKey = GlobalKey<ScaffoldState>();
 
   final List<String> _listItem = [
-    'assets/kelompok.jpeg',
+    'assets/kelompok.jpg',
     'assets/statistics.png',
-    'assets/visualisasi.jpeg',
+    'assets/visualisation.jpg',
     'assets/gallery.png',
     'assets/admin.jpeg',
     'assets/user.png',
@@ -201,7 +201,13 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               body: SafeArea(
-                child: Container(
+                child: userProvider.personalUser.isEmpty ? Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Text('Sedang Mengumpulkan Data'),
+                  ],
+                )) : Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(
@@ -290,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                               },
                             ),
                             BuildFeaturesCard(
-                              title: 'Gallery Kegiatan',
+                              title: 'Galeri Kegiatan',
                               assetImage: _listItem[3],
                               onTap: (){
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => FrontGallery()));

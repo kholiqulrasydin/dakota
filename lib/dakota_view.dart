@@ -3,6 +3,7 @@ import 'package:dakota/Services/api/dakota.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/Services/providers/user.dart';
+import 'package:dakota/animations/sizeconfig.dart';
 import 'package:dakota/bantuan_create.dart';
 import 'package:dakota/dakota_edit.dart';
 import 'package:dakota/dakota_viewAll.dart';
@@ -10,6 +11,7 @@ import 'package:dakota/model/BantuanUsahaModel.dart';
 import 'package:dakota/model/DakotaModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class DakotaView extends StatefulWidget {
@@ -25,10 +27,30 @@ class DakotaView extends StatefulWidget {
 
 class _DakotaViewState extends State<DakotaView> {
   final GlobalKey<ScaffoldState> _viewKey = new GlobalKey<ScaffoldState>();
+  List<Marker> myMarker = [];
+  GoogleMapController mapController;
+  MapType _currentMapType = MapType.normal;
+
+  _onMapCreated(GoogleMapController googleMapController) async {
+      LatLng point = LatLng(double.parse(widget._dakota.first.geoLatitude), double.parse(widget._dakota.first.geoLongtitude));
+      setState(() {
+        myMarker = [];
+        myMarker.add(Marker(
+          markerId: MarkerId(point.toString()),
+          position: point,
+          infoWindow: InfoWindow(
+            title: point.toString(),
+          ),
+          icon:
+          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+        ));
+      });
+  }
 
 
   @override
   Widget build(BuildContext context) {
+//    int totalJumlahAnggota = widget._dakota.first.jumlahLaki + widget._dakota.first.jumlahPerempuan;
     UserProvider userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -90,11 +112,12 @@ class _DakotaViewState extends State<DakotaView> {
                     color: Colors.blueAccent,
                   ),
                   onPressed: () {
+                    print(widget._dakota.first.id.toString());
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                DakotaEditingForm(widget._dakota)));
+                                DakotaEditingForm(namaKelompok: widget._dakota.first.namaKelompok, namaKetua: widget._dakota.first.namaKetua, alamat: widget._dakota.first.alamat, kelurahan: widget._dakota.first.kelurahan, kecamatan: widget._dakota.first.kecamatan, jumlahAnggotalaki: widget._dakota.first.jumlahLaki.toString(), jumlahAnggotaPerempuan: widget._dakota.first.jumlahPerempuan.toString(), luasSawah: widget._dakota.first.luasSawah.toString(), luasPekarangan: widget._dakota.first.luasPekarangan.toString(), luasTegal: widget._dakota.first.luasTegal.toString(), latitude: widget._dakota.first.geoLatitude, longtitude: widget._dakota.first.geoLongtitude, bidangUsaha: widget._dakota.first.bidangUsaha, subBidangUsaha: widget._dakota.first.subBidangUsaha, id: widget._dakota.first.id.toString(),)));
                   },
                 ) : Text(''),
               ],
@@ -118,12 +141,34 @@ class _DakotaViewState extends State<DakotaView> {
                 context, "Kelurahan/Desa", widget._dakota.first.kelurahan),
             buildAccountOptionRow(
                 context, "Nama Ketua", widget._dakota.first.namaKetua),
-            buildAccountOptionRow(context, "Jumlah Anggota",
-                widget._dakota.first.jumlahAnggota.toString()),
+            buildAccountOptionRow(context, "Jumlah Anggota Laki-Laki",
+                '${widget._dakota.first.jumlahLaki.toString()} orang'),
+            buildAccountOptionRow(context, "Jumlah Anggota Perempuan",
+                '${widget._dakota.first.jumlahPerempuan.toString()} orang'),
+            buildAccountOptionRow(context, "Total Anggota", widget._dakota.first.jumlahLaki == null && widget._dakota.first.jumlahPerempuan == null ? '0 orang' : '${(widget._dakota.first.jumlahPerempuan + widget._dakota.first.jumlahLaki).toString()} orang'),
             buildAccountOptionRow(
-                context, "Detail Lahan", widget._dakota.first.jenisLahan),
+                context, "Luas Lahan Sawah", '${widget._dakota.first.luasSawah.toString()} meter\u00B2'),
+            buildAccountOptionRow(
+                context, "Luas Lahan Pekarangan", '${widget._dakota.first.luasPekarangan.toString()} meter\u00B2'),
+            buildAccountOptionRow(
+                context, "Luas Lahan Tegal", '${widget._dakota.first.luasTegal.toString()} meter\u00B2'),
+            buildAccountOptionRow(
+                context, "Total Luas Lahan ", widget._dakota.first.luasSawah == null && widget._dakota.first.luasPekarangan == null && widget._dakota.first.luasTegal == null ? '0 meter' : '${(widget._dakota.first.luasPekarangan + widget._dakota.first.luasSawah + widget._dakota.first.luasTegal).toString()} meter\u00B2'),
             buildAccountOptionRow(
                 context, "Bidang Usaha", widget._dakota.first.bidangUsaha),
+            SizedBox(height: SizeConfig.heightMultiplier * 2,),
+            buildAccountOptionRow(context, "Lokasi Alamat", ''),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 2),
+              height: SizeConfig.heightMultiplier * 20,
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                    target: LatLng(double.parse(widget._dakota.first.geoLatitude), double.parse(widget._dakota.first.geoLongtitude)), zoom: 15.0),
+                onMapCreated: _onMapCreated,
+                mapType: _currentMapType,
+                markers: Set.from(myMarker),
+              ),
+            ),
             SizedBox(
               height: 40,
             ),
