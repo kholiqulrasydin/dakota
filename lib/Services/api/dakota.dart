@@ -71,7 +71,7 @@ class DakotaApi{
 
   }
 
-  static Future<void> updateDakota(
+  static Future<int> updateDakota(
       BuildContext context,
       AuthProvider authProvider,
       BantuanUsaha bantuanUsaha,
@@ -92,6 +92,7 @@ class DakotaApi{
       String bidangUsaha,
       String subBidangUsaha,
       int id) async {
+    int rturn;
     await http.put(
         'http://apidinper.reboeng.com/api/dakota/$id',
         headers: <String, String>{
@@ -119,12 +120,14 @@ class DakotaApi{
       if (response.statusCode == 200) {
         print('oke! status ${response.statusCode}, Dakota Successfully Updated');
         dakotaProvider.dakotaListOnce = [];
-        getPersonalGroup(context, dakotaProvider, id, bantuanUsaha);
+        rturn = 200;
       } else {
         print('Failed To Update Dakota');
+        rturn = 500;
       }
     });
 
+    return rturn;
 
   }
 

@@ -32,12 +32,9 @@ class _RuangAdminState extends State<RuangAdmin> {
       body: Center(
           child: Padding(
             padding: EdgeInsets.all(SizeConfig.widthMultiplier * 10),
-            child: GridView.count(
+            child: ListView(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+              scrollDirection: Axis.vertical,
               children: <Widget>[
               BuildFeaturesCard(
                 assetImage: 'assets/user.png', onTap: () {

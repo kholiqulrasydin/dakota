@@ -401,7 +401,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                                   setState(() {
                                                     boolLainnya = false;
                                                     subBidangUsaha = tanamanPangan;
-                                                    subBidangUsahaa = 'pilih salah satu';
+                                                    subBidangUsahaa = '';
                                                   });
                                                   break;
 
@@ -409,7 +409,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                                   setState(() {
                                                     boolLainnya = false;
                                                     subBidangUsaha = hortikultura;
-                                                    subBidangUsahaa = 'pilih salah satu';
+                                                    subBidangUsahaa = '';
                                                   });
                                                   break;
 
@@ -417,7 +417,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                                   setState(() {
                                                     boolLainnya = false;
                                                     subBidangUsaha = biofarmaka;
-                                                    subBidangUsahaa = 'pilih salah satu';
+                                                    subBidangUsahaa = '';
                                                   });
                                                   break;
 
@@ -425,7 +425,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                                   setState(() {
                                                     boolLainnya = false;
                                                     subBidangUsaha = perkebunan;
-                                                    subBidangUsahaa = 'pilih salah satu';
+                                                    subBidangUsahaa = '';
                                                   });
                                                   break;
 
@@ -433,7 +433,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                                   setState(() {
                                                     boolLainnya = false;
                                                     subBidangUsaha = peternakan;
-                                                    subBidangUsahaa = 'pilih salah satu';
+                                                    subBidangUsahaa = '';
                                                   });
                                                   break;
 
@@ -441,7 +441,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                                   setState(() {
                                                     boolLainnya = false;
                                                     subBidangUsaha = perikanan;
-                                                    subBidangUsahaa = 'pilih salah satu';
+                                                    subBidangUsahaa = '';
                                                   });
                                                   break;
                                           }
@@ -607,7 +607,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                           });
                           await DakotaApi.createDakota(context,authProvider, _namacontroller.text,_namacontroller.text,alamatcontroller.text,_kecamatancontroller.text
                               ,_kelurahandesacontroller.text,latitude,longtitude,_namaketuacontroller.text, int.parse(_jumlahAnggotaLakiController.text), int.parse(_jumlahAnggotaPerempuanController.text), int.parse(_luasSawahController.text), int.parse(_luasTegalController.text), int.parse(_luasPekaranganController.text), bidangUsaha,subBidangUsahaa)
-                              .then((value) {
+                              .then((value) async {
                                 if ( value == 200) {
                                   setState(() {
                                     notLoading = true;
@@ -623,7 +623,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                     onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>DarkotaViewAll())),
                                   );
                                 }
-                              );} else {
+                              );} else if (value == 500) {
                                   setState(() {
                                   notLoading = true;
                                 });
@@ -632,7 +632,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                       builder: (context){
                                         return DialogBox(
                                           title: 'Gagal',
-                                          description: 'Terjadi kesalahan server. silahkan tekan tombol kembali',
+                                          description: 'Terjadi kesalahan data. silahkan tekan tombol kembali',
                                           buttonText: 'kembali',
                                           image: 'assets/failed.gif',
                                         );
@@ -643,7 +643,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                         child: Container(
                           margin: EdgeInsets.symmetric(vertical: 20),
                           width: scrWidth * 0.85,
-                          height: 75,
+                          height: 60,
                           decoration: BoxDecoration(
                             color: Color(0xff0962ff),
                             borderRadius: BorderRadius.circular(20),
@@ -655,7 +655,7 @@ class _DakotaAddState extends State<DakotaAdd> {
                                 fontFamily: 'ProductSans',
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white70,
+                                color: Colors.white,
                               ),
                             ),
                           ),

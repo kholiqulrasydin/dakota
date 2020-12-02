@@ -267,13 +267,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         SizedBox(height: 20,),
-                        GridView.count(
+                        ListView(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          children: [
+                          children: <Widget>[
                             BuildFeaturesCard(
                               title: 'Data Kelompok',
                               assetImage: _listItem[0],
@@ -318,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                               },
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -382,6 +379,11 @@ class BuildFeaturesCard extends StatelessWidget {
                 ),
               ),
               Container(
+                height: SizeConfig.heightMultiplier * 6,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.white,
+              ),
                 child: Center(
                   child: Text(title, style: TextStyle(color: Colors.blueGrey),)
                 ),

@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BantuanUsahaApi {
-  static Future<void> createData(
+  static Future<int> createData(
       BuildContext context,
       BantuanUsaha bantuanUsaha,
       DakotaProvider dakotaProvider,
@@ -21,9 +21,8 @@ class BantuanUsahaApi {
       int jumlah,
       String dateTime,
       String keterangan) async {
+    int rturn;
     final prefs = await SharedPreferences.getInstance();
-
-    bool success = false;
 
     await http.post('http://apidinper.reboeng.com/api/bantuanusaha',
         headers: <String, String>{
@@ -42,19 +41,14 @@ class BantuanUsahaApi {
       print(response.statusCode.toString());
       if (response.statusCode == 200) {
         print('oke! status ${response.statusCode}');
-        success = true;
+        rturn = 200;
       } else {
         print('Failed To Create Bantuan Usaha');
-        success = false;
+        rturn = 500;
       }
     });
 
-    if (success) {
-      return await DakotaApi.getPersonalGroup(
-          context, dakotaProvider, idDakota, bantuanUsaha);
-    } else {
-      return 0;
-    }
+    return rturn;
   }
 
   static Future<void> getCountDatabyUser(BantuanUsaha bantuanUsaha) async {

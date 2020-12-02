@@ -57,8 +57,8 @@ class _FormInputDesignState extends State<FormInputDesign> {
             },
             style: TextStyle(
                 fontSize: 19,
-                color: Color(0xff0962ff),
-                fontWeight: FontWeight.bold),
+                color: Color(0xff0962ff)
+            ),
             decoration: InputDecoration(
               hintText: widget.inputHint,
               hintStyle: TextStyle(
