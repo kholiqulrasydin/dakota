@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                       FadeAnimation(
                           1,
                           Text(
-                            "Login",
+                            "SIMENTAN",
                             style: TextStyle(color: Colors.white, fontSize: SizeConfig.textMultiplier * 5),
                           )),
                       SizedBox(
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                       FadeAnimation(
                           1.3,
                           Text(
-                            "Selamat datang kembali",
+                            "Login",
                             style: TextStyle(color: Colors.white, fontSize: SizeConfig.textMultiplier * 3),
                           )),
                     ],
@@ -206,8 +206,8 @@ class _LoginPageState extends State<LoginPage> {
                             FadeAnimation(
                                 1.5,
                                 Text(
-                                  "App under the auspices of : ",
-                                  style: TextStyle(color: Colors.grey),
+                                  "Sistem Informasi, Monitoring dan Evaluasi Pertanian dan Perikanan.\n\nDikelola oleh : ",
+                                  style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,
                                 )),
                             SizedBox(
                               height: 30,
