@@ -44,7 +44,7 @@ class _SignupPageState extends State<SignupPage> {
             parent: AlwaysScrollableScrollPhysics()),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 40),
-          height: MediaQuery.of(context).size.height - 50,
+          height: SizeConfig.heightMultiplier * 130,
           width: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

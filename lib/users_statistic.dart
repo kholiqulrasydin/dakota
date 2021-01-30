@@ -172,9 +172,9 @@ class LastAdded extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: dData.length,
           itemBuilder: (context, index) {
-//            var c = random.nextInt(colors.length);
+           var c = random.nextInt(colors.length);
             final _data = dData[index];
-            return HorizontalCardItem(categoryHeight: categoryHeight, colors: colors, c: index, authProvider: authProvider, dakotaProvider: dakotaProvider, data: _data, bantuanUsaha: bantuanUsaha);
+            return HorizontalCardItem(categoryHeight: categoryHeight, colors: colors, c: c, authProvider: authProvider, dakotaProvider: dakotaProvider, data: _data, bantuanUsaha: bantuanUsaha);
           }),
     );
   }

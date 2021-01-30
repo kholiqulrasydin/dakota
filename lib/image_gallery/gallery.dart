@@ -58,11 +58,11 @@ class _FrontGalleryState extends State<FrontGallery> {
                 SizedBox(
                   width: 12,
                 ),
-                Icon(Icons.search, color: Color(0xff787878)),
+                // Icon(Icons.search, color: Color(0xff787878)),
                 SizedBox(width: 8),
                 Expanded(
                   child:
-                      Text("data", style: TextStyle(color: Color(0xff787878))),
+                      Text("Galeri", style: TextStyle(color: Color(0xff787878))),
                   /* TextField(
                     autocorrect: false,
                     decoration: InputDecoration(

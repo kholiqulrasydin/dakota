@@ -7,6 +7,7 @@ import 'package:dakota/animations/FadeAnimation.dart';
 import 'package:dakota/animations/sizeconfig.dart';
 import 'package:dakota/forgot_password.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -176,14 +177,24 @@ class _LoginPageState extends State<LoginPage> {
                                   onTap: () async {
                                     print('Login Start');
                                     await AuthServices.signIn(
-                                        context,
-                                        _loginPageKey,
                                         authProvider,
                                         _emailController.text,
                                         _passwordController.text,
                                         bantuanUsaha,
                                         dakotaProvider,
-                                        userProvider);
+                                        userProvider)
+                                        .then((response)
+                                    => response ?
+                                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                                      Navigator.of(context).pushReplacementNamed('Home Page');
+                                    })
+                                        :
+                                    _loginPageKey.currentState.showSnackBar(SnackBar(
+                                          content: Text('email atau password anda tidak terdaftar',style: TextStyle(color: Colors.white),),
+                                          duration: Duration(seconds: 5),
+                                          backgroundColor: Colors.redAccent.shade400,
+                                        ))
+                                    );
                                   },
                                   child: Container(
                                     height: 50,

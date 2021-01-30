@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dakota/animations/sizeconfig.dart';
 import 'package:dakota/image_gallery/save_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,17 +7,22 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:image_editor/image_editor.dart' hide ImageSource;
+import 'package:permission_handler/permission_handler.dart';
 
 class EditPhotoScreen extends StatefulWidget {
   final List arguments;
+
   EditPhotoScreen({this.arguments});
+
   @override
   _EditPhotoScreenState createState() => _EditPhotoScreenState();
 }
 
 class _EditPhotoScreenState extends State<EditPhotoScreen> {
+  final GlobalKey<ScaffoldState> _editScreenKey =
+      new GlobalKey<ScaffoldState>();
   final GlobalKey<ExtendedImageEditorState> editorKey =
-  GlobalKey<ExtendedImageEditorState>();
+      GlobalKey<ExtendedImageEditorState>();
 
   double sat = 1;
   double bright = 0;
@@ -44,6 +50,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
     1,
     0
   ];
+
   List<double> calculateSaturationMatrix(double saturation) {
     final m = List<double>.from(defaultColorMatrix);
     final invSat = 1 - saturation;
@@ -73,6 +80,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
   }
 
   File image;
+
   @override
   void initState() {
     super.initState();
@@ -82,9 +90,10 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _editScreenKey,
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
           title: Text(
             "Edit Image",
             style: TextStyle(color: Colors.black),
@@ -120,17 +129,14 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
                   showValueIndicator: ShowValueIndicator.never,
                 ),
                 child: Container(
+                  alignment: Alignment.center,
                   color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: ListView(
+                    scrollDirection: Axis.vertical,
                     children: <Widget>[
-                      Spacer(flex: 3),
                       _buildSat(),
-                      Spacer(flex: 1),
                       _buildBrightness(),
-                      Spacer(flex: 1),
                       _buildCon(),
-                      Spacer(flex: 3),
                     ],
                   ),
                 ),
@@ -269,15 +275,40 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
     final Duration diff = DateTime.now().difference(start);
     image.writeAsBytesSync(result);
     print('image_editor time : $diff');
-    Future.delayed(Duration(seconds: 0)).then(
-          (value) => Navigator.pushReplacement(
-        context,
-        CupertinoPageRoute(
-            builder: (context) => SaveImageScreen(
-              arguments: [image],
-            )),
-      ),
-    );
+    
+    var status = await Permission.storage.status;
+
+    if (status.isGranted) {
+      Future.delayed(Duration(seconds: 0)).then(
+        (value) => Navigator.pushReplacement(
+          context,
+          CupertinoPageRoute(
+              builder: (context) => SaveImageScreen(
+                    arguments: [image],
+                  )),
+        ),
+      );
+    } else if (status.isUndetermined) {
+      _editScreenKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Mohon izinkan izin penyimpanan ',
+          style: TextStyle(color: Colors.white),
+        ),
+        duration: Duration(seconds: 5),
+        backgroundColor: Colors.redAccent.shade400,
+      ));
+      await Permission.storage.request().then((value) => crop());
+    } else if(status.isDenied){
+      _editScreenKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Mohon izinkan izin penyimpanan ',
+          style: TextStyle(color: Colors.white),
+        ),
+        duration: Duration(seconds: 5),
+        backgroundColor: Colors.redAccent.shade400,
+      ));
+      await Permission.storage.request().then((value) => crop());
+    }
   }
 
   void flip() {
@@ -290,11 +321,11 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
 
   Widget _buildSat() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.03,
+          width: SizeConfig.widthMultiplier * 0.3,
         ),
         Column(
           children: <Widget>[
@@ -309,7 +340,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
           ],
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.6,
+          width: SizeConfig.widthMultiplier * 60,
           child: Slider(
             label: 'sat : ${sat.toStringAsFixed(2)}',
             onChanged: (double value) {
@@ -324,8 +355,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
           ),
         ),
         Padding(
-          padding:
-          EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.08),
+          padding: EdgeInsets.only(right: SizeConfig.widthMultiplier * 0.8),
           child: Text(sat.toStringAsFixed(2)),
         ),
       ],
@@ -334,11 +364,11 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
 
   Widget _buildBrightness() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.03,
+          width: SizeConfig.widthMultiplier * 0.3,
         ),
         Column(
           children: <Widget>[
@@ -353,7 +383,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
           ],
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.6,
+          width: SizeConfig.widthMultiplier * 60,
           child: Slider(
             label: '${bright.toStringAsFixed(2)}',
             onChanged: (double value) {
@@ -368,8 +398,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
           ),
         ),
         Padding(
-          padding:
-          EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.08),
+          padding: EdgeInsets.only(right: SizeConfig.widthMultiplier * 0.8),
           child: Text(bright.toStringAsFixed(2)),
         ),
       ],
@@ -378,11 +407,11 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
 
   Widget _buildCon() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.03,
+          width: SizeConfig.widthMultiplier * 0.3,
         ),
         Column(
           children: <Widget>[
@@ -397,7 +426,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
           ],
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.6,
+          width: SizeConfig.widthMultiplier * 60,
           child: Slider(
             label: 'con : ${con.toStringAsFixed(2)}',
             onChanged: (double value) {
@@ -412,8 +441,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
           ),
         ),
         Padding(
-          padding:
-          EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.08),
+          padding: EdgeInsets.only(right: SizeConfig.widthMultiplier * 0.8),
           child: Text(con.toStringAsFixed(2)),
         ),
       ],

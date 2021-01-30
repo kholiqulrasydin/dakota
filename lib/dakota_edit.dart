@@ -215,7 +215,7 @@ class _DakotaEditingFormState extends State<DakotaEditingForm> {
                                     await DakotaApi.getPersonalGroup(context, dakotaProvider, int.parse(widget.id), bantuanUsaha);
                                   }),
                               Text(
-                                'Tambah Data Kelompok Tani',
+                                'Edit Data Kelompok Tani',
                                 style: TextStyle(
                                   fontFamily: 'Cardo',
                                   fontSize: SizeConfig.textMultiplier * 2.5,

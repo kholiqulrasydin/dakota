@@ -2,9 +2,10 @@ import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/Services/providers/user.dart';
+import 'package:dakota/home.dart';
+import 'package:dakota/login_page.dart';
 import 'package:dakota/wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -30,16 +31,13 @@ class StartDakota extends StatelessWidget {
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
+          routes: <String, WidgetBuilder>{
+            'Home Page' : (BuildContext context) => HomePage(),
+            'Login' : (BuildContext context) => LoginPage(),
+          },
           title: 'Dinas Pertanian App',
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            canvasColor: Colors.white,
-          ),
           theme: ThemeData(
             primaryColor: Colors.blue[400],
-            canvasColor: Colors.white,
-            backgroundColor: Colors.white,
-            scaffoldBackgroundColor: Colors.white,
             textTheme: TextTheme(
               headline1: GoogleFonts.dmSans(
                 textStyle: TextStyle(

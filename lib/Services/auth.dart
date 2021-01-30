@@ -7,7 +7,6 @@ import 'package:dakota/Services/providers/auth.dart';
 import 'package:dakota/Services/providers/bantuan_usaha.dart';
 import 'package:dakota/Services/providers/dakota.dart';
 import 'package:dakota/Services/providers/user.dart';
-import 'package:dakota/home.dart';
 import 'package:dakota/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServices {
-  static Future<void> signIn(
-      BuildContext context,
-      GlobalKey<ScaffoldState> loginKey,
+  static Future<bool> signIn(
       AuthProvider authProvider,
       String email,
       String password,
@@ -47,26 +44,24 @@ class AuthServices {
 
       await UserApi.userFetch(userProvider);
 
-      return Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+      return true;
 
-//      return await initialLogged(context, bantuanUsaha, dakotaProvider).then(
-//          (value) => Navigator.of(context)
-//              .pushReplacement(MaterialPageRoute(builder: (context) => HomePage())));
     } else {
       print('Login Error');
-      if(response.statusCode == 500){
-      loginKey.currentState.showSnackBar(SnackBar(
-        content: Text('Terjadi Kesalahan Server',style: TextStyle(color: Colors.white)),
-        duration: Duration(seconds: 5),
-        backgroundColor: Colors.redAccent.shade400,
-      ));}else{
-        loginKey.currentState.showSnackBar(SnackBar(
-          content: Text('email atau password anda tidak terdaftar',style: TextStyle(color: Colors.white),),
-          duration: Duration(seconds: 5),
-          backgroundColor: Colors.redAccent.shade400,
-        ));
-      }
+      // if(response.statusCode == 500){
+      // loginKey.currentState.showSnackBar(SnackBar(
+      //   content: Text('Terjadi Kesalahan Server',style: TextStyle(color: Colors.white)),
+      //   duration: Duration(seconds: 5),
+      //   backgroundColor: Colors.redAccent.shade400,
+      // ));}else{
+      //   loginKey.currentState.showSnackBar(SnackBar(
+      //     content: Text('email atau password anda tidak terdaftar',style: TextStyle(color: Colors.white),),
+      //     duration: Duration(seconds: 5),
+      //     backgroundColor: Colors.redAccent.shade400,
+      //   ));
+      // }
+
+      return false;
 
     }
   }

@@ -97,7 +97,7 @@ class DetailsPage extends StatelessWidget {
                         child: InkWell(
                           child: Center(
                             child: Text(
-                              'Back',
+                              'kembali',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
